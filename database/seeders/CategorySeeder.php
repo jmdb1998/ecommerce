@@ -23,7 +23,7 @@ class CategorySeeder extends Seeder
              ],
             [   'name' => 'Tv, audio, video',
                 'slug' => Str::slug('Tv, audio, video'),
-                'icon' => '<i class="fas fa-tv></i>'
+                'icon' => '<i class="fas fa-tv"></i>'
             ],
             [   'name' => 'Consolas y videojuegos',
                 'slug' => Str::slug('Consolas y videojuegos'),

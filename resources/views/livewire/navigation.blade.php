@@ -53,7 +53,7 @@
             @else
                 <x-jet-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <i class="fas fa-user-circle fa-2x text-white text-3x1 cursor-pointer "></i>
+                        <i class="fas fa-user-circle text-white text-3xl cursor-pointer"></i>
                     </x-slot>
 
                     <x-slot name="content">
@@ -81,7 +81,7 @@
                         <li class="navigation-link text-gray-500 hover:bg-orange-500 hover:text-white">
                             <a href="" class="py-2 px-4 text-sm flex items-center">
                                 <span class="flex justify-center w-8">
-                                    {{--{!! $category->icon !!}--}}.......
+                                    {!! $category->icon !!}
                                 </span>
                                 {{$category->name}}
                             </a>
