@@ -15,11 +15,13 @@ class SizeSeeder extends Seeder
      */
     public function run()
     {
-        $products = Product::whereHas('subcategory', function(Builder $query){
+        $products = Product::whereHas('subcategory', function (Builder $query) {
             $query->where('color', true)
                 ->where('size', true);
         })->get();
+
         $sizes = ['Talla S', 'Talla M', 'Talla L'];
+
         foreach ($products as $product) {
             foreach ($sizes as $size) {
                 $product->sizes()->create([

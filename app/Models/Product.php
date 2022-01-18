@@ -15,7 +15,8 @@ class Product extends Model
     protected $fillable = ['name', 'slug', 'description', 'price', 'subcategory_id', 'brand_id', 'quantity'];
     //protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    public function sizes(){
+    public function sizes()
+    {
         return $this->hasMany(Size::class);
     }
 
@@ -32,5 +33,10 @@ class Product extends Model
     public function colors()
     {
         return $this->belongsToMany(Color::class)->withPivot('quantity');
+    }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 }

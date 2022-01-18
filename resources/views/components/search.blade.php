@@ -1,15 +1,16 @@
 @props(['size' => 50, 'color' => 'gray'])
+
 @php
     switch ($color) {
-    case 'gray':
-    $col = "#374151";
-    break;
-    case 'white':
-    $col = "#ffffff";
-    break;
-    default:
-    $col = "#374151";
-    break;
+        case 'gray':
+            $col = "#374151";
+            break;
+        case 'white':
+            $col = "#ffffff";
+            break;
+        default:
+            $col = "#374151";
+            break;
     }
 @endphp
 

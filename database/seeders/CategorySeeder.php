@@ -17,34 +17,39 @@ class CategorySeeder extends Seeder
     public function run()
     {
         $categories = [
-             [   'name' => 'Celurares y tablelts',
-                'slug' => Str::slug('Celurares y tablets'),
+            [
+                'name' => 'Celulares y tablets',
+                'slug' => Str::slug('Celulares y tablets'),
                 'icon' => '<i class="fas fa-mobile-alt"></i>'
-             ],
-            [   'name' => 'Tv, audio, video',
-                'slug' => Str::slug('Tv, audio, video'),
+            ],
+            [
+                'name' => 'TV, audio y video',
+                'slug' => Str::slug('TV, audio y video'),
                 'icon' => '<i class="fas fa-tv"></i>'
             ],
-            [   'name' => 'Consolas y videojuegos',
-                'slug' => Str::slug('Consolas y videojuegos'),
+            [
+                'name' => 'Consola y videojuegos',
+                'slug' => Str::slug('Consola y videojuegos'),
                 'icon' => '<i class="fas fa-gamepad"></i>'
             ],
-            [   'name' => 'Computacion',
-                'slug' => Str::slug('Computacion'),
+            [
+                'name' => 'Computación',
+                'slug' => Str::slug('Computación'),
                 'icon' => '<i class="fas fa-laptop"></i>'
             ],
-            [   'name' => 'Moda',
+            [
+                'name' => 'Moda',
                 'slug' => Str::slug('Moda'),
                 'icon' => '<i class="fas fa-tshirt"></i>'
             ],
         ];
 
-        foreach ($categories as $category){
+        foreach ($categories as $category) {
             $category = Category::factory()->create($category);
 
             $brands = Brand::factory(4)->create();
 
-            foreach ($brands as $brand){
+            foreach ($brands as $brand) {
                 $brand->categories()->attach($category->id);
             }
         }

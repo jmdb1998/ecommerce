@@ -12,11 +12,13 @@ class Subcategory extends Model
     protected $fillable = ['name', 'slug', 'image', 'category_id', 'color', 'size'];
     //protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    public function products(){
+    public function products()
+    {
         return $this->hasMany(Product::class);
     }
 
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 }
