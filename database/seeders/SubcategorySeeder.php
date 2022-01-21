@@ -21,75 +21,102 @@ class SubcategorySeeder extends Seeder
                 'category_id' => 1,
                 'name' => 'Celulares y smartphones',
                 'slug' => Str::slug('Celulares y smartphones'),
-                'color' => true
+                'color' => true,
+                'size' => false
             ],
             [
                 'category_id' => 1,
                 'name' => 'Accesorios para celulares',
                 'slug' => Str::slug('Accesorios para celulares'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 1,
                 'name' => 'Smartwatches',
                 'slug' => Str::slug('Smartwatches'),
+                'color' => false,
+                'size' => false
             ],
             /* TV, audio y video */
             [
                 'category_id' => 2,
                 'name' => 'TV y audio',
                 'slug' => Str::slug('TV y audio'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 2,
                 'name' => 'Audios',
                 'slug' => Str::slug('Audios'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 2,
                 'name' => 'Audio para autos',
                 'slug' => Str::slug('Audio para autos'),
+                'color' => false,
+                'size' => false
             ],
             /* Consola y videojuegos */
             [
                 'category_id' => 3,
                 'name' => 'Xbox',
                 'slug' => Str::slug('xbox'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 3,
                 'name' => 'Play Station',
                 'slug' => Str::slug('Play Station'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 3,
                 'name' => 'Videojuegos para PC',
                 'slug' => Str::slug('Videojuegos para PC'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 3,
                 'name' => 'Nintendo',
                 'slug' => Str::slug('Nintendo'),
+                'color' => false,
+                'size' => false
             ],
             /* Computación */
             [
                 'category_id' => 4,
                 'name' => 'Portátiles',
                 'slug' => Str::slug('Portátiles'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 4,
                 'name' => 'PC escritorio',
                 'slug' => Str::slug('PC escritorio'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 4,
                 'name' => 'Almacenamiento',
                 'slug' => Str::slug('Almacenamiento'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 4,
                 'name' => 'Accesorios computadoras',
                 'slug' => Str::slug('Accesorios computadoras'),
+                'color' => false,
+                'size' => false
             ],
             /* Moda */
             [
@@ -110,11 +137,15 @@ class SubcategorySeeder extends Seeder
                 'category_id' => 5,
                 'name' => 'Lentes',
                 'slug' => Str::slug('Lentes'),
+                'color' => false,
+                'size' => false
             ],
             [
                 'category_id' => 5,
                 'name' => 'Relojes',
                 'slug' => Str::slug('Relojes'),
+                'color' => false,
+                'size' => false
             ],
         ];
 
