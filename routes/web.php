@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\WelcomeController;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +19,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+
+Route::get('products/{product}',[ProductsController::class, 'show'])->name('products.show');
+
+Route::get('/deletecart', function (){
+    Cart::destroy();
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
