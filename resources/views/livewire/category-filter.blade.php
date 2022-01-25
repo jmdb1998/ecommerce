@@ -41,7 +41,7 @@
                     <li class="bg-white rounded-lg shadow">
                         <article>
                             <figure>
-                                <img class="h-48 w-full object-cover object-center" src="{{ \Illuminate\Support\Facades\Storage::url($product->images->first()->url) }}" alt="">
+                                <img class="h-48 w-full object-cover object-center" src="{{ Storage::url($product->images->first()->url) }}" alt="">
                             </figure>
                             <div class="py-4 px-6">
                                 <h1 class="text-lg font-semibold">
