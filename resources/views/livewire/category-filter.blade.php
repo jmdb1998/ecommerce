@@ -58,7 +58,7 @@
             @else
                 <ul>
                     @foreach($products as $product)
-                        <x-product-list :product="$product"></x-product-list>
+                        <x-products-list :product="$product"></x-products-list>
                     @endforeach
                 </ul>
             @endif
