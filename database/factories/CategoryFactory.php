@@ -14,9 +14,10 @@ class CategoryFactory extends Factory
      */
     public function definition()
     {
+        $name = $this->faker->word();
         return [
-            'name' => 'Mujeres',
-            'slug' => Str::slug('Mujeres'),
+            'name' => $name,
+            'slug' => Str::slug($name),
             'icon' => '<i class="fas fa-mobile-alt"></i>',
             'image' => 'categories/' . $this->faker->image(storage_path('app/public/categories'), 640, 480, null, false)
         ];

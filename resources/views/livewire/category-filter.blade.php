@@ -15,7 +15,7 @@
             <ul class="divide-y divide-gray-200">
                 @foreach($category->subcategories as $subcategory)
                     <li class="py-2 text-sm">
-                        <a class="cursor-pointer hover:bg-orange-500 capitalize {{ $subcategoria == $subcategory->name ? 'text-orange-500 font-semibold' : '' }}" wire:click="$set('subcategoria', '{{ $subcategory->name }}')">{{ $subcategory->name }}</a>
+                        <a dusk="subCategoria" class="cursor-pointer hover:bg-orange-500 capitalize {{ $subcategoria == $subcategory->name ? 'text-orange-500 font-semibold' : '' }}" wire:click="$set('subcategoria', '{{ $subcategory->name }}')">{{ $subcategory->name }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -24,7 +24,7 @@
             <ul class="divide-y divide-gray-200">
                 @foreach($category->brands as $brand)
                     <li class="py-2 text-sm">
-                        <a class="cursor-pointer hover:text-orange-500 capitalize {{ $marca == $brand->name ? 'text-orange-500 font-semibold' : ''}}" wire:click="$set('marca', '{{ $brand->name }}')">{{ $brand->name }}</a>
+                        <a dusk="brand" class="cursor-pointer hover:text-orange-500 capitalize {{ $marca == $brand->name ? 'text-orange-500 font-semibold' : ''}}" wire:click="$set('marca', '{{ $brand->name }}')">{{ $brand->name }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -45,7 +45,7 @@
                             </figure>
                             <div class="py-4 px-6">
                                 <h1 class="text-lg font-semibold">
-                                    <a href="{{ route('products.show', $product) }}">
+                                    <a dusk="product" href="{{ route('products.show', $product) }}">
                                         {{\Illuminate\Support\Str::limit($product->name,20)}}
                                     </a>
                                 </h1>

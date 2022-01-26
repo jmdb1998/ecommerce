@@ -24,13 +24,13 @@ class CategoryFilter extends Component
             $productsQuery = $productsQuery->whereHas('subcategory', function(Builder $query){
                 $query->where('name', $this->subcategoria);
             });
-        }if ($this->marca) {
-        $productsQuery = $productsQuery->whereHas('brand', function(Builder $query){
-            $query->where('name', $this->marca);
-        });
-    }
-
-        $products = $this->category->products()->where('status',2)->paginate(20);
+        }
+        if ($this->marca) {
+            $productsQuery = $productsQuery->whereHas('brand', function(Builder $query){
+                $query->where('name', $this->marca);
+            });
+        }
+        $products = $productsQuery->paginate(20);
 
         return view('livewire.category-filter', compact('products'));
     }
