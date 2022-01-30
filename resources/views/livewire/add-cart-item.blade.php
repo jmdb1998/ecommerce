@@ -5,6 +5,7 @@
     <div class="flex mt-4">
         <div class="mr-4">
             <x-jet-secondary-button
+                dusk="button_-"
                 disabled
                 x-bind:disabled="$wire.qty <= 1"
                 wire:loading.attr="disabled"
@@ -14,6 +15,7 @@
             </x-jet-secondary-button>
             <span class="mx-2 text-gray-700">{{ $qty }}</span>
             <x-jet-secondary-button
+                dusk="button_+"
                 x-bind:disabled="$wire.qty >= $wire.quantity"
                 wire:loading.attr="disabled"
                 wire:target="increment"
@@ -22,7 +24,7 @@
             </x-jet-secondary-button>
         </div>
         <div class="flex-1">
-            <x-button x-bind:disabled="$wire.qty > $wire.quantity" wire:click="addItem" wire:loading.attr="disabled" wire:target="addItem" x-bind:disabled="!$wire.quantity" class="w-full" color="orange">
+            <x-button dusk="carrito" x-bind:disabled="$wire.qty > $wire.quantity" wire:click="addItem" wire:loading.attr="disabled" wire:target="addItem" x-bind:disabled="!$wire.quantity" class="w-full" color="orange">
                 Agregar al carrito de compras
             </x-button>
         </div>

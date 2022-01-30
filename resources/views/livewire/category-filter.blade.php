@@ -15,7 +15,7 @@
             <ul class="divide-y divide-gray-200">
                 @foreach($category->subcategories as $subcategory)
                     <li class="py-2 text-sm">
-                        <a class="cursor-pointer hover:bg-orange-500 capitalize {{ $subcategoria == $subcategory->name ? 'text-orange-500 font-semibold' : '' }}" wire:click="$set('subcategoria', '{{ $subcategory->name }}')">{{ $subcategory->name }}</a>
+                        <a dusk="subCategoria" class="cursor-pointer hover:bg-orange-500 capitalize {{ $subcategoria == $subcategory->name ? 'text-orange-500 font-semibold' : '' }}" wire:click="$set('subcategoria', '{{ $subcategory->name }}')">{{ $subcategory->name }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -24,7 +24,7 @@
             <ul class="divide-y divide-gray-200">
                 @foreach($category->brands as $brand)
                     <li class="py-2 text-sm">
-                        <a class="cursor-pointer hover:text-orange-500 capitalize {{ $marca == $brand->name ? 'text-orange-500 font-semibold' : ''}}" wire:click="$set('marca', '{{ $brand->name }}')">{{ $brand->name }}</a>
+                        <a dusk="brand" class="cursor-pointer hover:text-orange-500 capitalize {{ $marca == $brand->name ? 'text-orange-500 font-semibold' : ''}}" wire:click="$set('marca', '{{ $brand->name }}')">{{ $brand->name }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -41,11 +41,11 @@
                     <li class="bg-white rounded-lg shadow">
                         <article>
                             <figure>
-                                <img class="h-48 w-full object-cover object-center" src="{{ \Illuminate\Support\Facades\Storage::url($product->images->first()->url) }}" alt="">
+                                <img class="h-48 w-full object-cover object-center" src="{{ Storage::url($product->images->first()->url) }}" alt="">
                             </figure>
                             <div class="py-4 px-6">
                                 <h1 class="text-lg font-semibold">
-                                    <a href="{{ route('products.show', $product) }}">
+                                    <a dusk="product" href="{{ route('products.show', $product) }}">
                                         {{\Illuminate\Support\Str::limit($product->name,20)}}
                                     </a>
                                 </h1>
@@ -58,36 +58,7 @@
             @else
                 <ul>
                     @foreach($products as $product)
-                        <li class="bg-white rounded-lg shadow mb-4">
-                            <article class="flex">
-                                <figure>
-                                    <img class="h-48 w-56 object-cover object-center" src="{{ Storage::url($product->images->first()->url) }}"
-                                         alt="">
-                                </figure><div class="flex-1 py-4 px-6 flex flex-col">
-                                    <div class="flex justify-between">
-                                        <div>
-                                            <h1 class="text-lg font-semibold text-gray-700">{{ $product->name }}</h1>
-                                            <p class="font-bold text-gray-700">{{ $product->price }} &euro;</p>
-                                        </div>
-                                        <div class="flex">
-                                            <ul class="flex text-sm ">
-                                                <li class="fas fa-star text-yellow-400 mr-1"></li>
-                                                <li class="fas fa-star text-yellow-400 mr-1"></li>
-                                                <li class="fas fa-star text-yellow-400 mr-1"></li>
-                                                <li class="fas fa-star text-yellow-400 mr-1"></li>
-                                                <li class="fas fa-star text-yellow-400 mr-1"></li>
-                                            </ul>
-                                            <span class="text-gray-700 text-sm">(24)</span>
-                                        </div>
-                                    </div>
-                                    <div class="mt-auto mb-6">
-                                        <x-danger-link href="{{ route('products.show', $product) }}">
-                                            Más información
-                                        </x-danger-link>
-                                    </div>
-                                </div>
-                            </article>
-                        </li>
+                        <x-products-list :product="$product"></x-products-list>
                     @endforeach
                 </ul>
             @endif
