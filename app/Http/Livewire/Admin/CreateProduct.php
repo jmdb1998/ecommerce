@@ -68,11 +68,12 @@ class CreateProduct extends Component
             $product->quantity = $this->quantity;
         }
         $product->save();
+
+        return redirect()->route('admin.products.edit', $product);
     }
 
     public function render()
     {
-        return view('livewire.admin.create-product')
-            ->layout('layouts.admin');
+        return view('livewire.admin.create-product')->layout('layouts.admin');
     }
 }
