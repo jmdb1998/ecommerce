@@ -1,5 +1,6 @@
 <x-app-layout>
-    <div class="container-menu py-8">
+    <div class="grid grid-cols-5 gap-6 container-menu py-8">
+        <div class="col-span-3">
         <div class="bg-white rounded-lg shadow-lg px-6 py-4 mb-6">
             <p class="text-gray-700 uppercase"><span class="font-semibold">Número de Orden:</span> {{ $order->id }}</p>
         </div>
@@ -69,7 +70,9 @@
             </table>
         </div>
     </div>
-    <div class="bg-white rounded-lg shadow-lg p-6 flex justify-between items-center">
+    <div class="col-span-2">
+        <div class="bg-white rounded-lg shadow-lg px-6 pt-6">
+            <div class="flex justify-between items-center mb-4">
         <img class="h-8" src="{{ asset('img/MC_VI_DI_2-1.jpg') }}" alt="">
         <div class="text-gray-700">
             <p class="text-sm font-semibold">
@@ -83,4 +86,30 @@
             </p>
         </div>
     </div>
+            <div id="paypal-button-container"></div>
+        </div>
+    </div>
+    </div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id={{ config('services.paypal.client_id') }}&currency=EUR"></script>
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: "{{ $order->total }}"
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(orderData) {
+                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    var transaction = orderData.purchase_units[0].payments.captures[0];
+                    alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+                });
+            }
+        }).render('#paypal-button-container');
+    </script>
 </x-app-layout>

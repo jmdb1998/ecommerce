@@ -186,7 +186,7 @@ jQuery.each({
 				ret = jQuery.unique( ret );
 			}
 
-			// Reverse order for parents* and prev-derivatives
+			// Reverse orders for parents* and prev-derivatives
 			if ( rparentsprev.test( name ) ) {
 				ret = ret.reverse();
 			}

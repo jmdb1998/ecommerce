@@ -27,11 +27,6 @@ class CreateOrder extends Component
         $this->departments = Department::all();
     }
 
-    public function render()
-    {
-        return view('livewire.create-order');
-    }
-
     public function create_order()
     {
         $rules = $this->rules;
@@ -64,10 +59,8 @@ class CreateOrder extends Component
         }
 
         $order->save();
-
         Cart::destroy();
-
-        return $this->redirect()->route('orders.payment', $order);
+        return redirect()->route('orders.payment', $order);
     }
 
     public function updatedEnvioType($value)
@@ -79,17 +72,11 @@ class CreateOrder extends Component
         }
     }
 
-    public function payment(Order $order)
-    {
-        $items = json_decode($order->content);
-
-        return view('order.payment', compact('order'));
-    }
-
     public function updatedDepartmentId($value){
         $this->cities = City::where('department_id', $value)->get();
         $this->reset(['city_id', 'district_id']);
     }
+
     public function updatedCityId($value){
         $city = City::find($value);
 
@@ -99,4 +86,18 @@ class CreateOrder extends Component
 
         $this->reset('district_id');
     }
+
+    public function render()
+    {
+        return view('livewire.create-orders');
+    }
+
+
+    /*public function payment(Order $order)
+    {
+        $items = json_decode($order->content);
+
+        return view('orders.payment', compact('order'));
+    }*/
+
 }

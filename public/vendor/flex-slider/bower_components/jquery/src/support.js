@@ -3,7 +3,7 @@ define([
 	"./var/strundefined",
 	"./var/support",
 	"./core/init", // Needed for hasOwn support test
-	// This is listed as a dependency for build order, but it's still optional in builds
+	// This is listed as a dependency for build orders, but it's still optional in builds
 	"./core/ready"
 ], function( jQuery, strundefined, support ) {
 

@@ -958,7 +958,7 @@ function addHandle( attrs, handler ) {
 }
 
 /**
- * Checks document order of two siblings
+ * Checks document orders of two siblings
  * @param {Element} a
  * @param {Element} b
  * @returns {Number} Returns less than 0 if a precedes b, greater than 0 if a follows b
@@ -1330,7 +1330,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	/* Sorting
 	---------------------------------------------------------------------- */
 
-	// Document order sorting
+	// Document orders sorting
 	sortOrder = hasCompare ?
 	function( a, b ) {
 
@@ -1365,7 +1365,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 				return 1;
 			}
 
-			// Maintain original order
+			// Maintain original orders
 			return sortInput ?
 				( indexOf( sortInput, a ) - indexOf( sortInput, b ) ) :
 				0;
@@ -3065,7 +3065,7 @@ jQuery.each({
 				ret = jQuery.unique( ret );
 			}
 
-			// Reverse order for parents* and prev-derivatives
+			// Reverse orders for parents* and prev-derivatives
 			if ( rparentsprev.test( name ) ) {
 				ret = ret.reverse();
 			}
@@ -3762,7 +3762,7 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ) {
 	thisCache = cache[ id ];
 
 	// jQuery data() is stored in a separate object inside the object's internal data
-	// cache in order to avoid key collisions between internal data and user-defined
+	// cache in orders to avoid key collisions between internal data and user-defined
 	// data.
 	if ( !pvt ) {
 		if ( !thisCache.data ) {
@@ -7874,7 +7874,7 @@ jQuery.extend({
 
 						// Support: IE6
 						// When new option element is added to select box we need to
-						// force reflow of newly added node in order to workaround delay
+						// force reflow of newly added node in orders to workaround delay
 						// of initialization properties
 						try {
 							option.selected = optionSet = true;
@@ -9084,7 +9084,7 @@ jQuery.extend({
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().match( rnotwhite ) || [ "" ];
 
-		// A cross-domain request is in order when we have a protocol:host:port mismatch
+		// A cross-domain request is in orders when we have a protocol:host:port mismatch
 		if ( s.crossDomain == null ) {
 			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!( parts &&

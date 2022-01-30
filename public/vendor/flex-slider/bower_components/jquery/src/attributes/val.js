@@ -130,7 +130,7 @@ jQuery.extend({
 
 						// Support: IE6
 						// When new option element is added to select box we need to
-						// force reflow of newly added node in order to workaround delay
+						// force reflow of newly added node in orders to workaround delay
 						// of initialization properties
 						try {
 							option.selected = optionSet = true;

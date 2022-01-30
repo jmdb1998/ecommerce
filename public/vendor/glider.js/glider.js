@@ -167,7 +167,7 @@
       }
       _.isDrag = false
     }
-    
+
     const move = function(){
       _.move = true
     };
@@ -448,7 +448,7 @@
     var resp = _._opt.responsive
 
     if (resp) {
-      // Sort the breakpoints in mobile first order
+      // Sort the breakpoints in mobile first orders
       resp.sort(function (a, b) {
         return b.breakpoint - a.breakpoint
       })

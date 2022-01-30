@@ -237,27 +237,27 @@
             for (var i = 0; i < slider.pagingCount; i++) {
               slide = slider.slides.eq(i);
 
-              if ( undefined === slide.attr( 'data-thumb-alt' ) ) { 
-                slide.attr( 'data-thumb-alt', '' ); 
+              if ( undefined === slide.attr( 'data-thumb-alt' ) ) {
+                slide.attr( 'data-thumb-alt', '' );
               }
-              
+
               item = $( '<a></a>' ).attr( 'href', '#' ).text( j );
               if ( slider.vars.controlNav === "thumbnails" ) {
                 item = $( '<img/>' ).attr( 'src', slide.attr( 'data-thumb' ) );
               }
-              
+
               if ( '' !== slide.attr( 'data-thumb-alt' ) ) {
                 item.attr( 'alt', slide.attr( 'data-thumb-alt' ) );
               }
 
               if ( 'thumbnails' === slider.vars.controlNav && true === slider.vars.thumbCaptions ) {
                 var captn = slide.attr( 'data-thumbcaption' );
-                if ( '' !== captn && undefined !== captn ) { 
+                if ( '' !== captn && undefined !== captn ) {
                   var caption = $('<span></span>' ).addClass( namespace + 'caption' ).text( captn );
                   item.append( caption );
                 }
               }
-              
+
               var liElement = $( '<li>' );
               item.appendTo( liElement );
               liElement.append( '</li>' );
@@ -980,7 +980,7 @@
             } else {
               slider.newSlides.css({"width": slider.computedW, "marginRight" : slider.computedM, "float": "left", "display": "block"});
             }
-              
+
            }
             else{
               slider.newSlides.css({"width": slider.computedW, "marginRight" : slider.computedM, "float": "left", "display": "block"});
@@ -1163,7 +1163,7 @@
     slideshowSpeed: 7000,           //Integer: Set the speed of the slideshow cycling, in milliseconds
     animationSpeed: 600,            //Integer: Set the speed of animations, in milliseconds
     initDelay: 0,                   //{NEW} Integer: Set an initialization delay, in milliseconds
-    randomize: false,               //Boolean: Randomize slide order
+    randomize: false,               //Boolean: Randomize slide orders
     fadeFirstSlide: true,           //Boolean: Fade in the first slide when animation type is "fade"
     thumbCaptions: false,           //Boolean: Whether or not to put captions on thumbnails when using the "thumbnails" controlNav.
 
@@ -1192,7 +1192,7 @@
     // Special properties
     controlsContainer: "",          //{UPDATED} jQuery Object/Selector: Declare which container the navigation elements should be appended too. Default container is the FlexSlider element. Example use would be $(".flexslider-container"). Property is ignored if given element is not found.
     manualControls: "",             //{UPDATED} jQuery Object/Selector: Declare custom control navigation. Examples would be $(".flex-control-nav li") or "#tabs-nav li img", etc. The number of elements in your controlNav should match the number of slides/tabs.
-    customDirectionNav: "",         //{NEW} jQuery Object/Selector: Custom prev / next button. Must be two jQuery elements. In order to make the events work they have to have the classes "prev" and "next" (plus namespace)
+    customDirectionNav: "",         //{NEW} jQuery Object/Selector: Custom prev / next button. Must be two jQuery elements. In orders to make the events work they have to have the classes "prev" and "next" (plus namespace)
     sync: "",                       //{NEW} Selector: Mirror the actions performed on this slider with another slider. Use with care.
     asNavFor: "",                   //{NEW} Selector: Internal property exposed for turning the slider into a thumbnail navigation for another slider
 
