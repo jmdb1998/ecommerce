@@ -65,6 +65,8 @@ class ColorSize extends Component
 
     public function render()
     {
-        return view('livewire.admin.color-size');
+        $sizeColors = $this->size->colors;
+
+        return view('livewire.admin.color-size', compact('sizeColors'));
     }
 }

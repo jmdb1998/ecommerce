@@ -15,7 +15,7 @@ class ColorProduct extends Component
 
     public $product, $colors;
     public $color_id, $quantity;
-    public $opne = true;
+    public $open = true;
     public $pivot, $pivot_color_id, $pivot_quantity;
     protected $listeners = ['delete'];
 

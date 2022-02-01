@@ -62,7 +62,8 @@ class SizeProduct extends Component
 
     public function render()
     {
-        $sizeColors = $this->size->colors;
-        return view('livewire.admin.color-size', compact('sizeColors'));
+        $sizes = $this->product->sizes;
+
+        return view('livewire.admin.size-product', compact('sizes'));
     }
 }
