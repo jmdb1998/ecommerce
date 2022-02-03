@@ -3,13 +3,16 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\Brand;
+use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class CreateCategory extends Component
 {
-    public $brands;
+    public $brands, $categories, $image, $image2, $category, $editImage;
+    public $listeners = ['delete'];
     public $createForm = [
         'name' => null,
         'slug' => null,
@@ -17,6 +20,14 @@ class CreateCategory extends Component
         'image' => null,
         'brands' => [],
     ];
+    public $editForm = [
+         'open' => false,
+         'name' => null,
+         'slug' => null,
+         'icon' => null,
+         'image' => null,
+         'brands' => [],
+        ];
     protected $rules = [
         'createForm.name' => 'required',
         'createForm.slug' => 'required|unique:categories,slug',
@@ -31,6 +42,11 @@ class CreateCategory extends Component
         'createForm.icon' => 'icono',
         'createForm.image' => 'imagen',
         'createForm.brands' => 'marcas',
+        'editForm.name' => 'nombre',
+        'editForm.slug' => 'slug',
+        'editForm.icon' => 'ícono',
+        'editImage' => 'imagen',
+        'editForm.brands' => 'marcas'
     ];
 
     public function updatedCreateFormName($value)
@@ -41,6 +57,13 @@ class CreateCategory extends Component
     public function mount()
     {
         $this->getBrands();
+        $this->getCategories();
+        $this->image = 1;
+    }
+
+    public function getCategories()
+    {
+        $this->categories = Category::all();
     }
 
     public function getBrands()
@@ -51,6 +74,70 @@ class CreateCategory extends Component
     public function save()
     {
         $this->validate();
+        $image = $this->createForm['image']->store('categories', 'public');
+        $category = Category::create([
+            'name' => $this->createForm['name'],
+            'slug' => $this->createForm['slug'],
+            'icon' => $this->createForm['icon'],
+            'image' => $image
+        ]);
+        $category->brands()->attach($this->createForm['brands']);
+
+        $this->image = 2;
+        $this->reset('createForm');
+
+        $this->getCategories();
+        $this->emit('saved');
+    }
+
+    public function delete(Category $category)
+    {
+        $category->delete();
+        $this->getCategories();
+    }
+
+    public function update(){
+        $rules = [
+            'editForm.name' => 'required',
+            'editForm.slug' => 'required|unique:categories,slug,' . $this->category->id,
+            'editForm.icon' => 'required',
+            'editForm.brands' => 'required',
+        ];
+        if ($this->editImage) {
+            $rules['editImage'] = 'required|image|max:1024';
+        }
+        $this->validate($rules);
+
+        if ($this->editImage) {
+            Storage::disk('public')->delete($this->editForm['image']);
+            $this->editForm['image'] = $this->editImage->store('categories', 'public');
+        }
+        $this->category->update($this->editForm);
+        $this->category->brands()->sync($this->editForm['brands']);
+        $this->reset(['editForm', 'editImage']);
+        $this->getCategories();
+    }
+
+    public function updatedEditFormName($value)
+    {
+        $this->editForm['slug'] = Str::slug($value);
+    }
+
+    public function edit(Category $category)
+    {
+        $this->image2 = rand();
+
+        $this->image = rand();
+        $this->reset(['editImage']);
+        $this->resetValidation();
+        $this->category = $category;
+
+        $this->editForm['open'] = true;
+        $this->editForm['name'] = $category->name;
+        $this->editForm['slug'] = $category->slug;
+        $this->editForm['icon'] = $category->icon;
+        $this->editForm['image'] = $category->image;
+        $this->editForm['brands'] = $category->brands->pluck('id');
     }
 
     public function render()
