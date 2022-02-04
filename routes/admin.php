@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Livewire\Admin\BrandComponent;
@@ -25,3 +26,7 @@ Route::get('categories', [CategoryController::class, 'index'])->name('admin.cate
 Route::get('categories/{category}', ShowCategory::class)->name('admin.categories.show');
 
 Route::get('brands', BrandComponent::class)->name('admin.brands.index');
+
+Route::get('orders', [OrderController::class, 'index'])->name('admin.orders.index');
+
+Route::get('orders/{order}', [OrderController::class, 'index'])->name('admin.orders.show');
