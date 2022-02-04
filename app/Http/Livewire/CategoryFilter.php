@@ -13,6 +13,8 @@ class CategoryFilter extends Component
 
     public $category, $subcategoria, $marca;
 
+    public $queryString = ['subcategoria', 'marca'];
+
     public $view = 'grid';
 
     public function render()
@@ -22,7 +24,7 @@ class CategoryFilter extends Component
         });
         if ($this->subcategoria) {
             $productsQuery = $productsQuery->whereHas('subcategory', function(Builder $query){
-                $query->where('name', $this->subcategoria);
+                $query->where('slug', $this->subcategoria);
             });
         }
         if ($this->marca) {
@@ -37,6 +39,11 @@ class CategoryFilter extends Component
 
     public function limpiar()
     {
-        $this->reset(['subcategoria','marca']);
+        $this->reset(['subcategoria','marca', 'page']);
+    }
+
+    public function updatedMarca()
+    {
+        $this->resetPage();
     }
 }

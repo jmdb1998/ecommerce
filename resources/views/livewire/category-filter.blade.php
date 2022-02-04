@@ -15,7 +15,7 @@
             <ul class="divide-y divide-gray-200">
                 @foreach($category->subcategories as $subcategory)
                     <li class="py-2 text-sm">
-                        <a dusk="subCategoria" class="cursor-pointer hover:bg-orange-500 capitalize {{ $subcategoria == $subcategory->name ? 'text-orange-500 font-semibold' : '' }}" wire:click="$set('subcategoria', '{{ $subcategory->name }}')">{{ $subcategory->name }}</a>
+                        <a dusk="subCategoria" class="cursor-pointer hover:bg-orange-500 capitalize {{ $subcategoria == $subcategory->slug ? 'text-orange-500 font-semibold' : '' }}" wire:click="$set('subcategoria', '{{ $subcategory->name }}')">{{ $subcategory->name }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -24,7 +24,7 @@
             <ul class="divide-y divide-gray-200">
                 @foreach($category->brands as $brand)
                     <li class="py-2 text-sm">
-                        <a dusk="brand" class="cursor-pointer hover:text-orange-500 capitalize {{ $marca == $brand->name ? 'text-orange-500 font-semibold' : ''}}" wire:click="$set('marca', '{{ $brand->name }}')">{{ $brand->name }}</a>
+                        <a dusk="brand" class="cursor-pointer hover:text-orange-500 capitalize {{ $marca == $brand->slug ? 'text-orange-500 font-semibold' : ''}}" wire:click="$set('marca', '{{ $brand->name }}')">{{ $brand->name }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -36,30 +36,30 @@
 
         <div class="md:col-span-2 lg:col-span-4">
             @if($view == 'grid')
-            <ul class="grid grid-cols-1 md:grid-cols-2 ls:grid-cols-4 gap-6">
-                @foreach($products as $product)
-                    <li class="bg-white rounded-lg shadow">
-                        <article>
-                            <figure>
-                                <img class="h-48 w-full object-cover object-center" src="{{ Storage::url($product->images->first()->url) }}" alt="">
-                            </figure>
-                            <div class="py-4 px-6">
-                                <h1 class="text-lg font-semibold">
-                                    <a dusk="product" href="{{ route('products.show', $product) }}">
-                                        {{\Illuminate\Support\Str::limit($product->name,20)}}
-                                    </a>
-                                </h1>
-                                <p class="font-bold text-trueGray-700">{{ $product->price }} &euro;</p>
+                <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    @forelse($products as $product)
+                        <li class="bg-white rounded-lg shadow">
+                            ...
+                        </li>
+                    @empty
+                        <li class="md:col-span-2 lg:col-span-4">
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <strong class="font-bold">Upss!</strong>
+                                <span class="block sm:inline">No existen productos con ese filtro.</span>
                             </div>
-                        </article>
-                    </li>
-                @endforeach
-            </ul>
+                        </li>
+                    @endforelse
+                </ul>
             @else
                 <ul>
-                    @foreach($products as $product)
-                        <x-products-list :product="$product"></x-products-list>
-                    @endforeach
+                    @forelse($products as $product)
+                        <x-product-list :product="$product"></x-product-list>
+                    @empty
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">Upss!</strong>
+                            <span class="block sm:inline">No existen productos con ese filtro.</span>
+                        </div>
+                    @endforelse
                 </ul>
             @endif
             <div class="mt-4">
