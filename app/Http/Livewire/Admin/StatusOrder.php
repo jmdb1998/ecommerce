@@ -7,11 +7,6 @@ use Livewire\Component;
 class StatusOrder extends Component
 {
     public $order, $status;
-
-    public function update()
-    {
-    }
-
     public function mount()
     {
         $this->status = $this->order->status;
