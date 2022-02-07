@@ -23,6 +23,11 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        return view('admin.orders.show', compact('order'));
+        $this->authorize('view', $order);
+
+        $items = json_decode($order->content);
+        $envio = json_decode($order->envio);
+
+        return view('orders.show', compact('order', 'items', 'envio'));
     }
 }
