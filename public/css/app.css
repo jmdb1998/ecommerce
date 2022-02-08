@@ -1189,6 +1189,9 @@ select {
 .-mt-10 {
   margin-top: -2.5rem;
 }
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
 .block {
   display: block;
 }
