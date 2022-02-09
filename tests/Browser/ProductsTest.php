@@ -171,7 +171,7 @@ class ProductsTest extends DuskTestCase
     }
 
     /** @test */
-    public function test_the_add_and_substract_buttons()
+    public function test_the_add_button()
     {
         $brand = Brand::factory()->create();
 
@@ -192,18 +192,51 @@ class ProductsTest extends DuskTestCase
             'imageable_type' => Product::class
         ]);
 
-        $this->browse(function (Browser $browser) use ($category, $subcategory, $product) {
+        $this->browse(function (Browser $browser) use ($product) {
             $browser->visit('/products/' . $product->slug)
                 ->pause(500)
-                ->assertSee($product->name)
+                ->assertSee($product->name);
+            for ($i = 0; $i< $product->quantity; $i++){
+                $browser->press('@button_+');
+            };
+            $browser->pause(500)
+                ->assertButtonDisabled('@button_+')
+                ->screenshot('boton_mas');
+        });
+    }
+
+    /** @test */
+    public function test_the_substract_button()
+    {
+        $brand = Brand::factory()->create();
+
+        $category = Category::factory()->create();
+        $category->brands()->attach($brand->id);
+
+        $subcategory = Subcategory::factory()->create([
+            'category_id' => $category->id,
+        ]);
+
+        $product = Product::factory()->create([
+            'subcategory_id' => $subcategory->id,
+            'brand_id' => $brand->id
+        ]);
+
+        Image::factory()->create([
+            'imageable_id' => $product->id,
+            'imageable_type' => Product::class
+        ]);
+
+        $this->browse(function (Browser $browser) use ($product) {
+            $browser->visit('/products/' . $product->slug)
                 ->pause(500)
-                ->assertSee($product->quantity)
-                ->pause(500)
-                ->assertButtonDisabled()
-                ->assertVisible('@button_+')
-                ->assertVisible('@button_-')
-                ->assertVisible('@carrito')
-                ->screenshot('muestra_detalles_del_prodcto');
+                ->assertSee($product->name);
+            for ($i = 0; $i< $product->quantity; $i++){
+                $browser->press('@button_-');
+            };
+            $browser->pause(500)
+                ->assertButtonDisabled('@button_-')
+                ->screenshot('boton_mas');
         });
     }
 }
