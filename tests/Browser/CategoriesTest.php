@@ -29,6 +29,7 @@ class CategoriesTest extends DuskTestCase
 
         $product = Product::factory()->create([
             'subcategory_id' => $subcategory->id,
+            /*ASASASD*/
         ]);
 
         Image::factory()->create([
