@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Http\Livewire\AddCartItem;
 use App\Http\Livewire\AddCartItemColor;
 use App\Http\Livewire\AddCartItemSize;
+use App\Http\Livewire\DropdownCart;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Image;
@@ -25,8 +26,6 @@ class CartTest extends TestCase
     public function normal_products_are_added_to_the_cart()
     {
         $normalProduct = $this->createProduct(false, false);
-        $colorProduct = $this->createProduct(true, false);
-        $sizeProduct = $this->createProduct(true, true);
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
             ->call('addItem', $normalProduct)
@@ -40,9 +39,8 @@ class CartTest extends TestCase
     public function color_products_are_added_to_the_cart()
     {
         $colorProduct = $this->createProduct(true, false);
-        $sizeProduct = $this->createProduct(true, true);
 
-        Livewire::test(AddCartItem::class, ['product' => $colorProduct])
+        Livewire::test(AddCartItemColor::class, ['product' => $colorProduct])
             ->call('addItem', $colorProduct)
             ->assertStatus(200);
 
@@ -54,12 +52,26 @@ class CartTest extends TestCase
     {
         $sizeProduct = $this->createProduct(true, true);
 
-        Livewire::test(AddCartItem::class, ['product' => $sizeProduct])
+        Livewire::test(AddCartItemSize::class, ['product' => $sizeProduct])
             ->call('addItem', $sizeProduct)
             ->assertStatus(200);
 
         $this->assertEquals(Cart::content()->first()->name, $sizeProduct->name);
     }
+
+    /** @test */
+    public function products_are_in_the_drop_down_cart()
+    {
+        $normalProduct = $this->createProduct(true, true);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        Livewire::test(DropdownCart::class)
+            ->assertSee($normalProduct->name);
+    }
+
+
 
     public function createProduct($color = false, $size = false)
     {
