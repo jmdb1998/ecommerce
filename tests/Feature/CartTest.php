@@ -6,6 +6,7 @@ use App\Http\Livewire\AddCartItem;
 use App\Http\Livewire\AddCartItemColor;
 use App\Http\Livewire\AddCartItemSize;
 use App\Http\Livewire\DropdownCart;
+use App\Http\Livewire\Search;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Image;
@@ -63,12 +64,54 @@ class CartTest extends TestCase
     public function products_are_in_the_drop_down_cart()
     {
         $normalProduct = $this->createProduct(true, true);
+        $normalProduct2 = $this->createProduct(true, true);
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
             ->call('addItem', $normalProduct);
 
         Livewire::test(DropdownCart::class)
-            ->assertSee($normalProduct->name);
+            ->assertSee($normalProduct->name)
+            ->assertDontSee($normalProduct2->name);
+    }
+
+    /** @test */
+    public function red_dot_increase_in_number()
+    {
+        $normalProduct = $this->createProduct(false, false);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        $this->assertEquals(Cart::count(), 1);
+    }
+
+    /** @test */
+    public function can_not_add_more_products_than_stock()
+    {
+        $normalProduct = $this->createProduct(false, false);
+
+        for ($i = 0; $i <= $normalProduct->quantity; $i++){
+            Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+                ->call('addItem', $normalProduct);
+        }
+
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
+    /** @test */
+    public function search_testing()
+    {
+        $normalProduct = $this->createProduct(false, false);
+
+        Livewire::test(Search::class, ['search' => $normalProduct->name])
+            ->assertViewIs('livewire.search')
+            ->assertViewHas('products', $normalProduct->name);
+
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
     }
 
 
