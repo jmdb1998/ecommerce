@@ -143,11 +143,50 @@ class CartTest extends TestCase
             ->assertViewIs('livewire.shopping-cart')
             ->assertSee($normalProduct->name);
 
-        Livewire::test(UpdateCartItem::class, ['rowId' => Cart::content()->first()->rowId])
+        Livewire::test(UpdateCartItem::class, ['rowId' => Cart::content()->first()->rowId, 'qty' => Cart::content()->first()->qty])
             ->assertViewIs('livewire.update-cart-item')
-            ->call('increment');
+            ->call('increment')
+            ->assertSet('qty',2);
 
-        dd(Cart::content()->first()->qty);
+        $this->assertEquals(Cart::subtotal(), $normalProduct->price*2);
+
+        Livewire::test(UpdateCartItem::class, ['rowId' => Cart::content()->first()->rowId, 'qty' => Cart::content()->first()->qty])
+            ->assertViewIs('livewire.update-cart-item')
+            ->call('decrement')
+            ->assertSet('qty',1);
+
+        $this->assertEquals(Cart::subtotal(), $normalProduct->price);
+
+    }
+
+    /** @test */
+    public function delete_the_shopping_cart()
+    {
+        $normalProduct = $this->createProduct(false, false);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        Livewire::test(ShoppingCart::class)
+            ->assertViewIs('livewire.shopping-cart')
+            ->assertSee($normalProduct->name)
+            ->call('destroy')
+            ->assertSeeHtml('<p class="text-lg text-gray-700 mt-4">TU CARRITO DE COMPRAS ESTÁ VACÍO</p>');
+    }
+
+    /** @test */
+    public function delete_product_in_the_shopping_cart()
+    {
+        $normalProduct = $this->createProduct(false, false);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        Livewire::test(ShoppingCart::class)
+            ->assertViewIs('livewire.shopping-cart')
+            ->assertSee($normalProduct->name)
+            ->call('delete', Cart::content()->first()->rowId)
+            ->assertDontSee($normalProduct->name);
 
     }
 
@@ -168,6 +207,7 @@ class CartTest extends TestCase
 
         $product = Product::factory()->create([
             'subcategory_id' => $subcategory->id,
+            'price' => 10.0,
         ]);
 
         Image::factory()->create([
