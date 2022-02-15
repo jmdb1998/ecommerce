@@ -7,6 +7,8 @@ use App\Http\Livewire\AddCartItemColor;
 use App\Http\Livewire\AddCartItemSize;
 use App\Http\Livewire\DropdownCart;
 use App\Http\Livewire\Search;
+use App\Http\Livewire\ShoppingCart;
+use App\Http\Livewire\UpdateCartItem;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Image;
@@ -112,6 +114,41 @@ class CartTest extends TestCase
         $this->markTestIncomplete(
             'This test has not been implemented yet.'
         );
+    }
+
+    /** @test */
+    public function see_shopping_cart()
+    {
+        $normalProduct = $this->createProduct(false, false);
+        $normalProduct2 = $this->createProduct(false, false);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        Livewire::test(ShoppingCart::class)
+            ->assertViewIs('livewire.shopping-cart')
+            ->assertSee($normalProduct->name)
+            ->assertDontSee($normalProduct2->name);
+    }
+
+    /** @test */
+    public function editing_shopping_cart()
+    {
+        $normalProduct = $this->createProduct(false, false);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        Livewire::test(ShoppingCart::class)
+            ->assertViewIs('livewire.shopping-cart')
+            ->assertSee($normalProduct->name);
+
+        Livewire::test(UpdateCartItem::class, ['rowId' => Cart::content()->first()->rowId])
+            ->assertViewIs('livewire.update-cart-item')
+            ->call('increment');
+
+        dd(Cart::content()->first()->qty);
+
     }
 
 
