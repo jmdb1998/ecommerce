@@ -232,47 +232,11 @@ class ProductsTest extends DuskTestCase
                 ->pause(500)
                 ->assertSee($product->name);
             for ($i = 0; $i< $product->quantity; $i++){
-                $browser->press('@button_-');
+                $browser->press('@button_+');
             };
             $browser->pause(500)
-                ->assertButtonDisabled('@button_-')
+                ->assertButtonDisabled('@button_+')
                 ->screenshot('boton_mas');
-        });
-    }
-
-    /** @test */
-    public function test_the_color_and_size_can_be_seen()
-    {
-        $brand = Brand::factory()->create();
-
-        $category = Category::factory()->create();
-        $category->brands()->attach($brand->id);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-            'color' => true,
-            'size' => true
-        ]);
-
-        $product = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-            'brand_id' => $brand->id
-        ]);
-
-        Image::factory()->create([
-            'imageable_id' => $product->id,
-            'imageable_type' => Product::class
-        ]);
-
-        $this->browse(function (Browser $browser) use ($product) {
-            $browser->visit('/products/' . $product->slug)
-                ->pause(500)
-                ->assertSee($product->name)
-                ->pause(500)
-                ->assertSee('@talla')
-                ->assertSee('@color')
-                ->screenshot('muestra_talla_y_color');
-
         });
     }
 }
