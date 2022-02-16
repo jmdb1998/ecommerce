@@ -16,6 +16,10 @@
                         Productos
                     </x-jet-nav-link>
 
+                    <x-jet-nav-link href="{{ route('admin.tarea.index') }}" :active="request()->routeIs('admin.tarea.index')">
+                        Tarea
+                    </x-jet-nav-link>
+
                     <x-jet-nav-link href="{{ route('admin.orders.index') }}" :active="request()->routeIs('admin.orders.*')">
                         Pedidos
                     </x-jet-nav-link>
