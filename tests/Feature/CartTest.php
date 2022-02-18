@@ -16,6 +16,7 @@ use App\Models\Product;
 use App\Models\Subcategory;
 use App\Models\User;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
@@ -187,6 +188,32 @@ class CartTest extends TestCase
             ->assertSee($normalProduct->name)
             ->call('delete', Cart::content()->first()->rowId)
             ->assertDontSee($normalProduct->name);
+
+    }
+
+
+    /** @test */
+    public function hopping_cart_is_created_when_logout()
+    {
+        $normalProduct = $this->createProduct(false, false);
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        Livewire::test(ShoppingCart::class)
+            ->assertViewIs('livewire.shopping-cart')
+            ->assertSee($normalProduct->name)
+            ->emit('logout');
+
+        $this->assertDatabaseHas('shoppingcart', [
+            'identifier' => $user->id
+        ]);
+
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
 
     }
 
