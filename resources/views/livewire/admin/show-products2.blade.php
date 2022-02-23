@@ -11,11 +11,20 @@
     </x-slot>
     <x-table-responsive>
 
+
         <div class="px-6 py-4">
             <x-jet-input class="w-full"
                          wire:model="search"
                          type="text"
                          placeholder="Introduzca el nombre del producto a buscar" />
+
+            <select wire:model="pagination">
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+
         </div>
         @if($products->count())
             <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
