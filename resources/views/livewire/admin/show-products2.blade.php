@@ -34,19 +34,10 @@
                         Precio
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Descripción
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Subcategoria
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Marca
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Fecha Creación
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Fecha Edición
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Stock
@@ -55,13 +46,13 @@
                         Colores
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Stock Colores
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Tallas
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Stock Tallas
+                        Fecha Creación
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Fecha Edición
                     </th>
                     <th scope="col" class="relative px-6 py-3">
                         <span class="sr-only">Editar</span>
@@ -70,7 +61,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($products as $product)
-                    {{--{{dd($product->brand->name)}}--}}
+                    {{--{{dd($product->colors->all())}}--}}
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -96,9 +87,6 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {{ $product->price }} &euro;
                         </td>
-                        <td>
-                            <div class="text-sm text-gray-500 overflow-y-auto h-12">{{ $product->description }}</div>
-                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">{{ $product->subcategory->name }}</div>
                         </td>
@@ -106,19 +94,33 @@
                             <div class="text-sm text-gray-500">{{ $product->brand->name }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
+                            @if(!isset($product->quantity))
+                                @if($product->colors->count() == 0)
+                                    <div class="text-sm text-gray-500">
+                                        {{ array_sum($product->sizes->pluck('colors')->collapse()->pluck('pivot')->pluck('quantity')->all()) }}</div>
+                                @else
+                                    <div class="text-sm text-gray-500">{{ array_sum($product->colors->pluck('pivot')->pluck('quantity')->all()) }}</div
+                                @endif
+                            @else
+                                <div class="text-sm text-gray-500">{{ $product->quantity }}</div>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($product->sizes)
+                                <div class="text-sm text-gray-500">{{ implode(', ',array_unique($product->sizes->pluck('colors')->collapse()->pluck('name')->all()))}}</div>
+                            @endif
+                            @if($product->colors)
+                                <div class="text-sm text-gray-500">{{implode(', ',$product->colors->pluck('name')->all())}}</div>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500">{{ implode(', ',$product->sizes->pluck('name')->all()) }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">{{ $product->created_at }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">{{ $product->updated_at }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{ $product->quantity }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{\App\Models\Product::find(33)->colors->get(1)->name}}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{\App\Models\Product::find(33)->colors->get(1)->pivot->quantity}}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <a href="{{ route('admin.products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900">Editar</a>
