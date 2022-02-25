@@ -13,12 +13,13 @@
 
 
         <div class="px-6 py-4">
-            <x-jet-input class="w-full"
+            <x-jet-input class="w-1/2"
                          wire:model="search"
                          type="text"
                          placeholder="Introduzca el nombre del producto a buscar" />
 
-            <select wire:model="pagination">
+            <select wire:model="pagination" class="rounded-lg">
+                <option value="" selected disabled>Productos a mostrar</option>
                 <option value="10">10</option>
                 <option value="15">15</option>
                 <option value="20">20</option>
