@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\LivewireTest;
 
 use App\Http\Livewire\AddCartItem;
 use App\Http\Livewire\AddCartItemColor;
@@ -18,7 +18,6 @@ use App\Models\User;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -191,12 +190,13 @@ class CartTest extends TestCase
 
     }
 
-
     /** @test */
-    public function hopping_cart_is_created_when_logout()
+    public function shopping_cart_saved_in_bd_when_session_close()
     {
         $normalProduct = $this->createProduct(false, false);
         $user = User::factory()->create();
+        $this->actingAs($user);
+
         $this->actingAs($user);
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
@@ -204,17 +204,42 @@ class CartTest extends TestCase
 
         Livewire::test(ShoppingCart::class)
             ->assertViewIs('livewire.shopping-cart')
-            ->assertSee($normalProduct->name)
-            ->emit('logout');
+            ->assertSee($normalProduct->name);
+
+        $this->post('/logout');
+
+        $this->assertDatabaseHas('shoppingcart', [
+            'identifier' => $user->id
+        ]);
+    }
+
+    /** @test */
+    public function shopping_cart_is_restored_when_login_back_in()
+    {
+        $normalProduct = $this->createProduct(false, false);
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->actingAs($user);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        Livewire::test(ShoppingCart::class)
+            ->assertViewIs('livewire.shopping-cart')
+            ->assertSee($normalProduct->name);
+
+        $this->post('/logout');
 
         $this->assertDatabaseHas('shoppingcart', [
             'identifier' => $user->id
         ]);
 
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->actingAs($user);
 
+        Livewire::test(ShoppingCart::class)
+            ->assertViewIs('livewire.shopping-cart')
+            ->assertSee($normalProduct->name);;
     }
 
 
