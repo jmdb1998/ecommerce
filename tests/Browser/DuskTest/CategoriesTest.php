@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Browser;
+namespace Tests\Browser\DuskTest;
 
 use App\Models\Brand;
 use App\Models\Category;
