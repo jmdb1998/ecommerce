@@ -243,6 +243,47 @@ class CartTest extends TestCase
     }
 
 
+    /** @test */
+    public function normal_products_stock_change_when_added_to_the_cart()
+    {
+        $normalProduct = $this->createProduct(false, false);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct)
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('products', [
+            'id' => $normalProduct->id,
+            'quantity' => 14
+        ]);
+
+    }
+
+    /** @test */
+    public function color_products_stock_change_when_added_to_the_cart()
+    {
+        $colorProduct = $this->createProduct(true, false);
+
+        Livewire::test(AddCartItemColor::class, ['product' => $colorProduct])
+            ->call('addItem', $colorProduct)
+            ->assertStatus(200);
+
+        $this->assertEquals(Cart::content()->first()->name, $colorProduct->name);
+    }
+
+    /** @test */
+    public function size_products_stock_change_when_added_to_the_cart()
+    {
+        $sizeProduct = $this->createProduct(true, true);
+
+        Livewire::test(AddCartItemSize::class, ['product' => $sizeProduct])
+            ->call('addItem', $sizeProduct)
+            ->assertStatus(200);
+
+        $this->assertEquals(Cart::content()->first()->name, $sizeProduct->name);
+    }
+
+
 
     public function createProduct($color = false, $size = false)
     {
