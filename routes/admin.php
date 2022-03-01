@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', ShowProducts::class)->name('admin.index');
 
-Route::get('products/{product}/edit', EditProduct::class)->name('admin.products.edit');
+Route::get('/tarea', \App\Http\Livewire\Admin\ShowProducts2::class)->name('admin.tarea.index');
 
-Route::get('products/create', CreateProduct::class)->name('admin.products.create')->name('admin.products.create');
+Route::get('products/{product}/edit', EditProduct::class)->name('admin.products.edit');
 
 Route::get('products/create', CreateProduct::class)->name('admin.products.create');
 
