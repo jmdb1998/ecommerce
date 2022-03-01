@@ -110,6 +110,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($products as $product)
+                    {{ dd($prueba) }}
                     {{--{{dd($product->colors->all())}}--}}
                     <tr>
                         @if($this->showColumn('Nombre'))
