@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Browser;
+namespace Tests\Browser\DuskTest;
 
 use App\Models\Brand;
 use App\Models\Category;
@@ -27,8 +27,16 @@ class CategoriesTest extends DuskTestCase
             'category_id' => $category->id,
         ]);
 
+        $subcategory2 = Subcategory::factory()->create([
+            'category_id' => $category->id,
+        ]);
+
         $product = Product::factory()->create([
             'subcategory_id' => $subcategory->id,
+        ]);
+
+        $product2 = Product::factory()->create([
+            'subcategory_id' => $subcategory2->id,
         ]);
 
         Image::factory()->create([
@@ -36,18 +44,26 @@ class CategoriesTest extends DuskTestCase
             'imageable_type' => Product::class
         ]);
 
-        $this->browse(function (Browser $browser) use ($category, $subcategory, $product, $brand) {
+        $this->browse(function (Browser $browser) use ($category, $subcategory, $product, $brand, $product2) {
             $browser->visit('/')
                 ->pause(500)
                 ->clickLink('Categorías')
                 ->assertSee($category->name)
                 ->mouseover('@categories')
+                ->pause(500)
                 ->assertSee($subcategory->name)
+                ->pause(500)
                 ->clickLink($subcategory->name)
+                ->pause(500)
                 ->assertSee($category->name)
+                ->pause(500)
                 ->assertSee($subcategory->name)
+                ->pause(500)
                 ->assertSee(ucfirst($brand->name))
+                ->pause(500)
                 ->assertSee($product->name)
+                ->pause(500)
+                ->assertDontSee($product2->name)
                 ->screenshot('se_ve_la_categoria');
 
         });

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Browser;
+namespace Tests\Browser\DuskTest;
 
 use App\Models\Brand;
 use App\Models\Category;
@@ -232,13 +232,14 @@ class ProductsTest extends DuskTestCase
                 ->pause(500)
                 ->assertSee($product->name);
             for ($i = 0; $i< $product->quantity; $i++){
-                $browser->press('@button_+');
+                $browser->press('@button_-');
             };
             $browser->pause(500)
-                ->assertButtonDisabled('@button_+')
+                ->assertButtonDisabled('@button_-')
                 ->screenshot('boton_mas');
         });
     }
+
     /** @test */
     public function test_the_color_and_size_can_be_seen()
     {
@@ -275,4 +276,3 @@ class ProductsTest extends DuskTestCase
         });
     }
 }
-
