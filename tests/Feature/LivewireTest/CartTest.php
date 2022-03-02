@@ -96,24 +96,18 @@ class CartTest extends TestCase
             Livewire::test(AddCartItem::class, ['product' => $normalProduct])
                 ->call('addItem', $normalProduct);
         }
-
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
     }
 
     /** @test */
     public function search_testing()
     {
         $normalProduct = $this->createProduct(false, false);
+        $normalProduct2 = $this->createProduct(false, false);
 
         Livewire::test(Search::class, ['search' => $normalProduct->name])
             ->assertViewIs('livewire.search')
-            ->assertViewHas('products', $normalProduct->name);
-
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+            ->assertSee('products', $normalProduct->name)
+            ->assertDontSee($normalProduct2->name);
     }
 
     /** @test */
@@ -216,9 +210,10 @@ class CartTest extends TestCase
     /** @test */
     public function shopping_cart_is_restored_when_login_back_in()
     {
+        $this->markTestIncomplete();
+
         $normalProduct = $this->createProduct(false, false);
         $user = User::factory()->create();
-        $this->actingAs($user);
 
         $this->actingAs($user);
 
@@ -239,7 +234,7 @@ class CartTest extends TestCase
 
         Livewire::test(ShoppingCart::class)
             ->assertViewIs('livewire.shopping-cart')
-            ->assertSee($normalProduct->name);;
+            ->assertSee($normalProduct->name);
     }
 
 
@@ -256,6 +251,8 @@ class CartTest extends TestCase
             'id' => $normalProduct->id,
             'quantity' => 14
         ]);
+
+        $this->markTestIncomplete();
 
     }
 

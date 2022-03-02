@@ -2,21 +2,27 @@
 
 namespace Tests\Feature\LivewireTest;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AdminZoneTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
+    /** @test */
+    public function not_logged_user_cant_access_admin_routes()
     {
-        $response = $this->get('/');
+        $this->get('/admin')->assertStatus(302)->assertRedirect('/login');
+    }
 
-        $response->assertStatus(200);
+    /** @test */
+    public function only_admin_users_can_access_admin()
+    {
+        $admin = User::factory()->create()->assignRole('admin');
+        $endUser = User::factory()->create();
+
+        $this->actingAs($admin)->get('/admin')->assertStatus(200);
+        $this->actingAs($endUser)->get('/admin')->assertStatus(403);
     }
 }
