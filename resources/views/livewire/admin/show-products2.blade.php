@@ -17,6 +17,8 @@
                          type="text"
                          placeholder="Introduzca el nombre del producto a buscar" />
 
+
+
             <select wire:model="pagination" class="rounded-lg">
                 <option value="" selected disabled>Productos a mostrar</option>
                 <option value="10">10</option>
@@ -49,8 +51,8 @@
                 <thead class="bg-gray-50">
                 <tr>
                     @if($this->showColumn('Nombre'))
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Nombre
+                        <th sortable wire:click="sortBy('name')":direction="$sortField === 'title' ? $sortDirection : null" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <button>NOMBRE</button>
                         </th>
                     @endif
                     @if($this->showColumn('Categoría'))
@@ -59,23 +61,23 @@
                         </th>
                     @endif
                     @if($this->showColumn('Estado'))
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Estado
+                         <th sortable wire:click="sortBy('status')":direction="$sortField === 'title' ? $sortDirection : null" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                           <button>ESTADO</button>
                         </th>
                     @endif
                     @if($this->showColumn('Precio'))
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Precio
-                        </th>
-                    @endif
+                            <th sortable wire:click="sortBy('price')":direction="$sortField === 'title' ? $sortDirection : null" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <button>PRECIO</button>
+                            </th>
+                        @endif
                     @if($this->showColumn('Subcategoria'))
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Subcategoria
+                        <th sortable wire:click="sortBy('subcategory_id')" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <button>SUBCATEGORIA</button>
                         </th>
                     @endif
                     @if($this->showColumn('Marca'))
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Marca
+                        <th sortable wire:click="sortBy('brand_id')" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <button>MARCA</button>
                         </th>
                     @endif
                     @if($this->showColumn('Stock'))
@@ -94,13 +96,13 @@
                         </th>
                     @endif
                     @if($this->showColumn('Fecha Creación'))
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Fecha Creación
+                        <th sortable wire:click="sortBy('created_at')" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <button>FECHA CREACION</button>
                         </th>
                     @endif
                     @if($this->showColumn('Fecha Edición'))
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Fecha Edición
+                        <th sortable wire:click="sortBy('updated_at')" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <button>FECHA EDICION</button>
                         </th>
                     @endif
                     <th scope="col" class="relative px-6 py-3">
@@ -110,8 +112,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($products as $product)
-                    {{ dd($prueba) }}
-                    {{--{{dd($product->colors->all())}}--}}
+                    {{--{{ dd($prueba) }}--}}
                     <tr>
                         @if($this->showColumn('Nombre'))
                         <td class="px-6 py-4 whitespace-nowrap">
