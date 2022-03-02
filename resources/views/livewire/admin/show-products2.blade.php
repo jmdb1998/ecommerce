@@ -18,7 +18,6 @@
                          placeholder="Introduzca el nombre del producto a buscar" />
 
 
-
             <select wire:model="pagination" class="rounded-lg">
                 <option value="" selected disabled>Productos a mostrar</option>
                 <option value="10">10</option>
@@ -44,6 +43,42 @@
                     </spam>
                 </div>
             </div>
+
+            <aside>
+                <x-jet-input class="w-1/3"
+                             wire:model="category"
+                             type="text"
+                             placeholder="Introduzca el nombre de la categoria a buscar" />
+
+                <x-jet-input class="w-1/3"
+                             wire:model="subcategory"
+                             type="text"
+                             placeholder="Introduzca el nombre de la subcategoria a buscar" />
+
+                <x-jet-input class="w-1/3"
+                             wire:model="brand"
+                             type="text"
+                             placeholder="Introduzca el statos del producto" />
+
+                <x-jet-input class="w-1/3"
+                             wire:model="price"
+                             type="text"
+                             placeholder="Introduzca el precio del producto" />
+
+                <x-jet-input class="w-1/3"
+                             wire:model="colors"
+                             type="text"
+                             placeholder="Introduzca el precio del producto" />
+
+                <x-jet-input class="w-1/3"
+                             wire:model="sizes"
+                             type="text"
+                             placeholder="Introduzca el precio del producto" />
+
+                <x-jet-button class="mt-4" wire:click="limpiar">
+                    Eliminar Filtros
+                </x-jet-button>
+            </aside>
         </div>
 
         @if($products->count())
@@ -112,7 +147,6 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($products as $product)
-                    {{--{{ dd($prueba) }}--}}
                     <tr>
                         @if($this->showColumn('Nombre'))
                         <td class="px-6 py-4 whitespace-nowrap">
