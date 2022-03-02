@@ -57,7 +57,7 @@ use WithPagination;
 
     public function render()
     {
-        $products = Product::query()->where('name', 'LIKE', "%{$this->search}%")->paginate($this->pagination);
+        $products = Product::query()->where('name', 'LIKE', "%{$this->search}%")->orderBy($this->sortField,$this->sortDirection)->paginate($this->pagination);
 
         if ($this->categorySearch) {
             $products = $products->whereHas('subcategory', function (Builder $query) {
