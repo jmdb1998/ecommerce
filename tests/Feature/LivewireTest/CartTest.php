@@ -11,6 +11,7 @@ use App\Http\Livewire\ShoppingCart;
 use App\Http\Livewire\UpdateCartItem;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\Subcategory;
@@ -260,24 +261,35 @@ class CartTest extends TestCase
     public function color_products_stock_change_when_added_to_the_cart()
     {
         $colorProduct = $this->createProduct(true, false);
+        $color = Color::create([
+            'name' => 'prueba',
+        ]);
+
+        $colorProduct->colors()->attach($color->id);
 
         Livewire::test(AddCartItemColor::class, ['product' => $colorProduct])
             ->call('addItem', $colorProduct)
             ->assertStatus(200);
 
         $this->assertEquals(Cart::content()->first()->name, $colorProduct->name);
+
+        $this->markTestIncomplete();
     }
 
     /** @test */
     public function size_products_stock_change_when_added_to_the_cart()
     {
         $sizeProduct = $this->createProduct(true, true);
+        $color = Color::factory()->create();
+        $color->attach();
 
         Livewire::test(AddCartItemSize::class, ['product' => $sizeProduct])
             ->call('addItem', $sizeProduct)
             ->assertStatus(200);
 
         $this->assertEquals(Cart::content()->first()->name, $sizeProduct->name);
+
+        $this->markTestIncomplete();
     }
 
 
