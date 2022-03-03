@@ -48,7 +48,7 @@ class ProductsTest extends TestCase
     }
 
     /** @test */
-    public function size_products__stock_is_seen()
+    public function size_products_stock_is_seen()
     {
         $sizeProduct = $this->createProduct(true, true);
 
@@ -56,6 +56,8 @@ class ProductsTest extends TestCase
             ->assertViewIs('livewire.add-cart-item-size')
             ->assertSee('quantity');
     }
+
+
 
     public function createProduct($color = false, $size = false)
     {

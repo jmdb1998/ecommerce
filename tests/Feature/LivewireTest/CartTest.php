@@ -64,72 +64,21 @@ class CartTest extends TestCase
     }
 
     /** @test */
-    public function products_are_in_the_drop_down_cart()
-    {
-        $normalProduct = $this->createProduct(true, true);
-        $normalProduct2 = $this->createProduct(true, true);
-
-        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
-            ->call('addItem', $normalProduct);
-
-        Livewire::test(DropdownCart::class)
-            ->assertSee($normalProduct->name)
-            ->assertDontSee($normalProduct2->name);
-    }
-
-    /** @test */
-    public function red_dot_increase_in_number()
-    {
-        $normalProduct = $this->createProduct(false, false);
-
-        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
-            ->call('addItem', $normalProduct);
-
-        $this->assertEquals(Cart::count(), 1);
-    }
-
-    /** @test */
     public function can_not_add_more_products_than_stock()
     {
-        $normalProduct = $this->createProduct(false, false);
+        $normalProduct = $this->createProduct();
 
-        for ($i = 0; $i <= $normalProduct->quantity; $i++){
+        for ($i = 1; $i <= $normalProduct->quantity; $i++){
             Livewire::test(AddCartItem::class, ['product' => $normalProduct])
                 ->call('addItem', $normalProduct);
         }
-    }
-
-    /** @test */
-    public function search_testing()
-    {
-        $normalProduct = $this->createProduct(false, false);
-        $normalProduct2 = $this->createProduct(false, false);
-
-        Livewire::test(Search::class, ['search' => $normalProduct->name])
-            ->assertViewIs('livewire.search')
-            ->assertSee('products', $normalProduct->name)
-            ->assertDontSee($normalProduct2->name);
-    }
-
-    /** @test */
-    public function see_shopping_cart()
-    {
-        $normalProduct = $this->createProduct(false, false);
-        $normalProduct2 = $this->createProduct(false, false);
-
-        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
-            ->call('addItem', $normalProduct);
-
-        Livewire::test(ShoppingCart::class)
-            ->assertViewIs('livewire.shopping-cart')
-            ->assertSee($normalProduct->name)
-            ->assertDontSee($normalProduct2->name);
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])->assertSet('quantity', 0);
     }
 
     /** @test */
     public function editing_shopping_cart()
     {
-        $normalProduct = $this->createProduct(false, false);
+        $normalProduct = $this->createProduct();
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
             ->call('addItem', $normalProduct);
@@ -157,7 +106,7 @@ class CartTest extends TestCase
     /** @test */
     public function delete_the_shopping_cart()
     {
-        $normalProduct = $this->createProduct(false, false);
+        $normalProduct = $this->createProduct();
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
             ->call('addItem', $normalProduct);
@@ -172,7 +121,7 @@ class CartTest extends TestCase
     /** @test */
     public function delete_product_in_the_shopping_cart()
     {
-        $normalProduct = $this->createProduct(false, false);
+        $normalProduct = $this->createProduct();
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
             ->call('addItem', $normalProduct);
@@ -188,7 +137,7 @@ class CartTest extends TestCase
     /** @test */
     public function shopping_cart_saved_in_bd_when_session_close()
     {
-        $normalProduct = $this->createProduct(false, false);
+        $normalProduct = $this->createProduct();
         $user = User::factory()->create();
         $this->actingAs($user);
 
@@ -213,7 +162,7 @@ class CartTest extends TestCase
     {
         $this->markTestIncomplete();
 
-        $normalProduct = $this->createProduct(false, false);
+        $normalProduct = $this->createProduct();
         $user = User::factory()->create();
 
         $this->actingAs($user);
@@ -242,6 +191,8 @@ class CartTest extends TestCase
     /** @test */
     public function normal_products_stock_change_when_added_to_the_cart()
     {
+        $this->markTestIncomplete();
+
         $normalProduct = $this->createProduct(false, false);
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
@@ -253,13 +204,12 @@ class CartTest extends TestCase
             'quantity' => 14
         ]);
 
-        $this->markTestIncomplete();
-
     }
 
     /** @test */
     public function color_products_stock_change_when_added_to_the_cart()
     {
+        $this->markTestIncomplete();
         $colorProduct = $this->createProduct(true, false);
         $color = Color::create([
             'name' => 'prueba',
@@ -272,13 +222,12 @@ class CartTest extends TestCase
             ->assertStatus(200);
 
         $this->assertEquals(Cart::content()->first()->name, $colorProduct->name);
-
-        $this->markTestIncomplete();
     }
 
     /** @test */
     public function size_products_stock_change_when_added_to_the_cart()
     {
+        $this->markTestIncomplete();
         $sizeProduct = $this->createProduct(true, true);
         $color = Color::factory()->create();
         $color->attach();
@@ -288,8 +237,6 @@ class CartTest extends TestCase
             ->assertStatus(200);
 
         $this->assertEquals(Cart::content()->first()->name, $sizeProduct->name);
-
-        $this->markTestIncomplete();
     }
 
 
