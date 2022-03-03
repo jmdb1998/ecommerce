@@ -57,7 +57,7 @@ use WithPagination;
 
     public function render()
     {
-        $products = Product::query()->where('name', 'LIKE', "%{$this->search}%")->orderBy($this->sortField,$this->sortDirection)->paginate($this->pagination);
+        $products = Product::query()->where('name', 'LIKE', "%{$this->search}%");
 
         if ($this->categorySearch) {
             $products = $products->whereHas('subcategory', function (Builder $query) {
@@ -95,6 +95,7 @@ use WithPagination;
             $products = $products->whereHas('sizes');
         }
 
+        $products = $products->orderBy($this->sortField,$this->sortDirection)->paginate($this->pagination);
 
         return view('livewire.admin.show-products2', compact('products'))
             ->layout('layouts.admin');

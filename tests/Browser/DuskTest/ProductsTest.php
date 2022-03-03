@@ -18,58 +18,11 @@ class ProductsTest extends DuskTestCase
     /** @test */
     public function it_shows_five_products()
     {
-        $brand = Brand::factory()->create();
-
-        $category = Category::factory()->create();
-        $category->brands()->attach($brand->id);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-        ]);
-
-        $product1 = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-        ]);
-
-        Image::factory()->create([
-            'imageable_id' => $product1->id,
-            'imageable_type' => Product::class
-        ]);
-
-
-        $product2 = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-
-        ]);
-        Image::factory()->create([
-            'imageable_id' => $product2->id,
-            'imageable_type' => Product::class
-        ]);
-
-
-        $product3 = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-        ]);
-        Image::factory()->create([
-            'imageable_id' => $product3->id,
-            'imageable_type' => Product::class
-        ]);
-
-        $product4 = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-        ]);
-        Image::factory()->create([
-            'imageable_id' => $product4->id,
-            'imageable_type' => Product::class
-        ]);
-
-        $product5 = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-        ]);
-        Image::factory()->create([
-            'imageable_id' => $product5->id,
-            'imageable_type' => Product::class
-        ]);
+        $product1 = $this->create_product();
+        $product2 = $this->create_product();
+        $product3 = $this->create_product();
+        $product4 = $this->create_product();
+        $product5 = $this->create_product();
 
         $this->browse(function (Browser $browser) use ($product1,$product2,$product3,$product4,$product5) {
             $browser->visit('/')
@@ -90,33 +43,9 @@ class ProductsTest extends DuskTestCase
     /** @test */
     public function it_shows_published_products()
     {
-        $brand = Brand::factory()->create();
+        $published = $this->create_product();
 
-        $category = Category::factory()->create();
-        $category->brands()->attach($brand->id);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-        ]);
-
-        $published = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-        ]);
-
-        Image::factory()->create([
-            'imageable_id' => $published->id,
-            'imageable_type' => Product::class
-        ]);
-
-
-        $notPublished = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-            'status' => 1,
-        ]);
-        Image::factory()->create([
-            'imageable_id' => $notPublished->id,
-            'imageable_type' => Product::class
-        ]);
+        $notPublished = $this->create_product(false, false, 1);
 
         $this->browse(function (Browser $browser) use ($published,$notPublished) {
             $browser->visit('/')
@@ -173,24 +102,7 @@ class ProductsTest extends DuskTestCase
     /** @test */
     public function test_the_add_button()
     {
-        $brand = Brand::factory()->create();
-
-        $category = Category::factory()->create();
-        $category->brands()->attach($brand->id);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-        ]);
-
-        $product = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-            'brand_id' => $brand->id
-        ]);
-
-        Image::factory()->create([
-            'imageable_id' => $product->id,
-            'imageable_type' => Product::class
-        ]);
+        $product = $this->create_product();
 
         $this->browse(function (Browser $browser) use ($product) {
             $browser->visit('/products/' . $product->slug)
@@ -208,24 +120,7 @@ class ProductsTest extends DuskTestCase
     /** @test */
     public function test_the_substract_button()
     {
-        $brand = Brand::factory()->create();
-
-        $category = Category::factory()->create();
-        $category->brands()->attach($brand->id);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-        ]);
-
-        $product = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-            'brand_id' => $brand->id
-        ]);
-
-        Image::factory()->create([
-            'imageable_id' => $product->id,
-            'imageable_type' => Product::class
-        ]);
+        $product = $this->create_product();
 
         $this->browse(function (Browser $browser) use ($product) {
             $browser->visit('/products/' . $product->slug)
@@ -243,6 +138,23 @@ class ProductsTest extends DuskTestCase
     /** @test */
     public function test_the_color_and_size_can_be_seen()
     {
+
+        $product = $this->create_product(true, true);
+
+        $this->browse(function (Browser $browser) use ($product) {
+            $browser->visit('/products/' . $product->slug)
+                ->pause(500)
+                ->assertSee($product->name)
+                ->pause(500)
+                ->assertSee('@talla')
+                ->assertSee('@color')
+                ->screenshot('muestra_talla_y_color');
+
+        });
+    }
+
+    public function create_product($color = false, $size = false, $status = 2)
+    {
         $brand = Brand::factory()->create();
 
         $category = Category::factory()->create();
@@ -250,8 +162,8 @@ class ProductsTest extends DuskTestCase
 
         $subcategory = Subcategory::factory()->create([
             'category_id' => $category->id,
-            'color' => true,
-            'size' => true
+            'color' => $color,
+            'size' => $size
         ]);
 
         $product = Product::factory()->create([
@@ -264,15 +176,6 @@ class ProductsTest extends DuskTestCase
             'imageable_type' => Product::class
         ]);
 
-        $this->browse(function (Browser $browser) use ($product) {
-            $browser->visit('/products/' . $product->slug)
-                ->pause(500)
-                ->assertSee($product->name)
-                ->pause(500)
-                ->assertSee('@talla')
-                ->assertSee('@color')
-                ->screenshot('muestra_talla_y_color');
-
-        });
+        return $product;
     }
 }
