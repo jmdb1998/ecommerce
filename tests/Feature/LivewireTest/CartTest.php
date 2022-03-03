@@ -5,8 +5,6 @@ namespace Tests\Feature\LivewireTest;
 use App\Http\Livewire\AddCartItem;
 use App\Http\Livewire\AddCartItemColor;
 use App\Http\Livewire\AddCartItemSize;
-use App\Http\Livewire\DropdownCart;
-use App\Http\Livewire\Search;
 use App\Http\Livewire\ShoppingCart;
 use App\Http\Livewire\UpdateCartItem;
 use App\Models\Brand;
@@ -14,10 +12,10 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Image;
 use App\Models\Product;
+use App\Models\Size;
 use App\Models\Subcategory;
 use App\Models\User;
 use Gloudemans\Shoppingcart\Facades\Cart;
-use Illuminate\Auth\Events\Logout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -179,12 +177,6 @@ class CartTest extends TestCase
         $this->assertDatabaseHas('shoppingcart', [
             'identifier' => $user->id
         ]);
-
-        $this->actingAs($user);
-
-        Livewire::test(ShoppingCart::class)
-            ->assertViewIs('livewire.shopping-cart')
-            ->assertSee($normalProduct->name);
     }
 
 
@@ -210,18 +202,22 @@ class CartTest extends TestCase
     public function color_products_stock_change_when_added_to_the_cart()
     {
         $this->markTestIncomplete();
+
         $colorProduct = $this->createProduct(true, false);
         $color = Color::create([
             'name' => 'prueba',
         ]);
 
-        $colorProduct->colors()->attach($color->id);
+        $colorProduct->colors()->attach($color->id, ['quantity' => 10]);
 
         Livewire::test(AddCartItemColor::class, ['product' => $colorProduct])
             ->call('addItem', $colorProduct)
             ->assertStatus(200);
 
-        $this->assertEquals(Cart::content()->first()->name, $colorProduct->name);
+        $this->assertDatabaseHas('color_product', [
+            'id' => $colorProduct->id,
+            'quantity' => 9
+        ]);
     }
 
     /** @test */
@@ -229,14 +225,27 @@ class CartTest extends TestCase
     {
         $this->markTestIncomplete();
         $sizeProduct = $this->createProduct(true, true);
-        $color = Color::factory()->create();
-        $color->attach();
+
+        $color = Color::create([
+            'name' => 'prueba',
+        ]);
+
+        $size = Size::factory([
+            'name' => 'prueba_talla',
+            'product_id' => $sizeProduct->id
+        ])->create();
+
+        $sizeProduct->colors()->attach($color->id, ['quantity' => 10]);
+        $size->colors()->attach($sizeProduct->id, ['quantity' => 10]);
 
         Livewire::test(AddCartItemSize::class, ['product' => $sizeProduct])
             ->call('addItem', $sizeProduct)
             ->assertStatus(200);
 
-        $this->assertEquals(Cart::content()->first()->name, $sizeProduct->name);
+        $this->assertDatabaseHas('color_size', [
+            'id' => $sizeProduct->id,
+            'quantity' => 9
+        ]);
     }
 
 

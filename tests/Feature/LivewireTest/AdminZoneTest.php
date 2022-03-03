@@ -17,6 +17,8 @@ use Tests\TestCase;
 
 class AdminZoneTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function not_logged_user_cant_access_admin_routes()
     {
