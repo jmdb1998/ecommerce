@@ -103,27 +103,29 @@ class OrderTest extends TestCase
     /** @test */
     public function when_order_is_created_color_product_stock_changes_in_DB()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->markTestIncomplete();
+        $user = User::factory()->create();
 
         $colorProduct = $this->createProduct(true, false);
-        $color = Color::find(1);
-        $user = User::factory()->create();
+        $color = Color::create([
+            'name' => 'prueba',
+        ]);
+
+        $colorProduct->colors()->attach($color->id, ['quantity' => 10]);
+
         $this->actingAs($user);
 
-        Livewire::test(AddCartItemColor::class, ['product' => $colorProduct])
+        Livewire::test(AddCartItemColor::class, ['product' => $colorProduct, 'color_id' => $color->id])
             ->call('addItem', $colorProduct)
             ->assertStatus(200);
 
         Livewire::test(CreateOrder::class,['contact' => 'Test', 'phone' => 633444816])
             ->call('create_order')
             ->assertStatus(200)
-            ->assertRedirect('/orders/4/payment');
+            ->assertRedirect('/orders/1/payment');
 
         $this->assertDatabaseHas('color_product', [
-            /*'color_id' => $color->id,*/
-            'product_id' => $colorProduct->id,
+            'id' => $colorProduct->id,
             'quantity' => 9
         ]);
     }
@@ -131,12 +133,22 @@ class OrderTest extends TestCase
     /** @test */
     public function when_order_is_created_size_product_stock_changes_in_DB()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->markTestIncomplete();
+
         $sizeProduct = $this->createProduct(true, true);
-        $color = Color::first();
-        $size = Size::first();
+
+        $color = Color::create([
+            'name' => 'prueba',
+        ]);
+
+        $size = Size::factory([
+            'name' => 'prueba_talla',
+            'product_id' => $sizeProduct->id
+        ])->create();
+
+        $sizeProduct->colors()->attach($color->id, ['quantity' => 10]);
+        $size->colors()->attach($sizeProduct->id, ['quantity' => 10]);
+
         $user = User::factory()->create();
         $this->actingAs($user);
 
