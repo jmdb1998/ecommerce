@@ -144,8 +144,6 @@ class CartTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $this->actingAs($user);
-
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
             ->call('addItem', $normalProduct);
 
@@ -163,68 +161,61 @@ class CartTest extends TestCase
     /** @test */
     public function normal_products_stock_change_when_added_to_the_cart()
     {
-        $this->markTestIncomplete();
-
         $normalProduct = $this->createProduct(false, false);
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
             ->call('addItem', $normalProduct)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('products', [
-            'id' => $normalProduct->id,
-            'quantity' => 14
-        ]);
+        $this->assertEquals(qty_available($normalProduct->id), 14);
 
     }
 
     /** @test */
     public function color_products_stock_change_when_added_to_the_cart()
     {
-        $this->markTestIncomplete();
-
         $colorProduct = $this->createProduct(true, false);
-        $color = Color::create([
-            'name' => 'prueba',
-        ]);
+        $color = $this->createColor();
 
         $colorProduct->colors()->attach($color->id, ['quantity' => 10]);
 
         Livewire::test(AddCartItemColor::class, ['product' => $colorProduct])
+            ->set('options', ['color_id' => $color->id])
             ->call('addItem', $colorProduct)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('color_product', [
-            'id' => $colorProduct->id,
-            'quantity' => 9
-        ]);
+        $this->assertEquals(qty_available($colorProduct->id, $color->id), 9);
     }
 
     /** @test */
     public function size_products_stock_change_when_added_to_the_cart()
     {
-        $this->markTestIncomplete();
         $sizeProduct = $this->createProduct(true, true);
 
-        $color = Color::create([
-            'name' => 'prueba',
-        ]);
+        $color = $this->createColor();
 
-        $size = Size::factory([
-            'name' => 'prueba_talla',
-            'product_id' => $sizeProduct->id
-        ])->create();
+        $size = $this->createSize($sizeProduct);
 
-        $sizeProduct->colors()->attach($color->id, ['quantity' => 10]);
-        $size->colors()->attach($sizeProduct->id, ['quantity' => 10]);
+        $size->colors()->attach($color->id, ['quantity' => 10]);
+
 
         Livewire::test(AddCartItemSize::class, ['product' => $sizeProduct])
+            ->set('options', ['size_id' => $size->id, 'color_id' => $color->id])
             ->call('addItem', $sizeProduct)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('color_size', [
-            'id' => $sizeProduct->id,
-            'quantity' => 9
-        ]);
+        $this->assertEquals(qty_available($sizeProduct->id, $color->id, $size->id), 9);
+    }
+
+    public function createColor()
+    {
+        $color = Color::create(['name' => 'prueba']);
+        return $color;
+    }
+
+    public function createSize($product)
+    {
+        $size = Size::factory(['name' => 'prueba', 'product_id' => $product->id])->create();
+        return $size;
     }
 }

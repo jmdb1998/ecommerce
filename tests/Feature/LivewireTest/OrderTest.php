@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\ColorProduct;
 use App\Models\Image;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Size;
 use App\Models\Subcategory;
@@ -92,8 +93,7 @@ class OrderTest extends TestCase
 
         Livewire::test(CreateOrder::class,['contact' => 'Test', 'phone' => 633444816])
             ->call('create_order')
-            ->assertStatus(200)
-            ->assertRedirect('/orders/3/payment');
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('products', [
             'id' => $normalProduct->id,
@@ -105,29 +105,26 @@ class OrderTest extends TestCase
     /** @test */
     public function when_order_is_created_color_product_stock_changes_in_DB()
     {
-        $this->markTestIncomplete();
         $user = User::factory()->create();
 
         $colorProduct = $this->createProduct(true, false);
-        $color = Color::create([
-            'name' => 'prueba',
-        ]);
+        $color = $this->createColor();
 
         $colorProduct->colors()->attach($color->id, ['quantity' => 10]);
 
         $this->actingAs($user);
 
-        Livewire::test(AddCartItemColor::class, ['product' => $colorProduct, 'color_id' => $color->id])
+        Livewire::test(AddCartItemColor::class, ['product' => $colorProduct])
+            ->set('options', ['color_id' => $color->id])
             ->call('addItem', $colorProduct)
             ->assertStatus(200);
 
         Livewire::test(CreateOrder::class,['contact' => 'Test', 'phone' => 633444816])
             ->call('create_order')
-            ->assertStatus(200)
-            ->assertRedirect('/orders/1/payment');
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('color_product', [
-            'id' => $colorProduct->id,
+            'product_id' => $colorProduct->id,
             'quantity' => 9
         ]);
     }
@@ -135,38 +132,63 @@ class OrderTest extends TestCase
     /** @test */
     public function when_order_is_created_size_product_stock_changes_in_DB()
     {
-        $this->markTestIncomplete();
-
         $sizeProduct = $this->createProduct(true, true);
 
-        $color = Color::create([
-            'name' => 'prueba',
-        ]);
+        $color = $this->createColor();
 
-        $size = Size::factory([
-            'name' => 'prueba_talla',
-            'product_id' => $sizeProduct->id
-        ])->create();
+        $size = $this->createSize($sizeProduct);
 
-        $sizeProduct->colors()->attach($color->id, ['quantity' => 10]);
-        $size->colors()->attach($sizeProduct->id, ['quantity' => 10]);
+        $size->colors()->attach($color->id, ['quantity' => 10]);
 
         $user = User::factory()->create();
         $this->actingAs($user);
 
         Livewire::test(AddCartItemSize::class, ['product' => $sizeProduct])
+            ->set('options', ['size_id' => $size->id, 'color_id' => $color->id])
             ->call('addItem', $sizeProduct)
             ->assertStatus(200);
 
         Livewire::test(CreateOrder::class,['contact' => 'Test', 'phone' => 633444816])
             ->call('create_order')
-            ->assertStatus(200)
-            ->assertRedirect('/orders/5/payment');
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('color_size', [
-            'color_id' => $color->id,
-            'size_id' => $size->id,
             'quantity' => 9
         ]);
+    }
+
+    /** @test */
+    public function check_the_expiration_of_pending_orders()
+    {
+        $normalProduct = $this->createProduct();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        Livewire::test(CreateOrder::class,['contact' => 'Test', 'phone' => 633444816])
+            ->call('create_order')
+            ->assertStatus(200);
+
+        $order = Order::first();
+        $order->created_at = now()->subMinute(15);
+        $order->save();
+
+        $this->artisan('schedule:run');
+        $order = Order::first();
+        $this->assertEquals($order->status, 5);
+    }
+
+    public function createColor()
+    {
+        $color = Color::create(['name' => 'prueba']);
+        return $color;
+    }
+
+    public function createSize($product)
+    {
+        $size = Size::factory(['name' => 'prueba', 'product_id' => $product->id])->create();
+        return $size;
     }
 }
