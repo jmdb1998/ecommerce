@@ -21,16 +21,16 @@
         <div x-data="{ envio_type: @entangle('envio_type') }">
             <p class="mt-6 mb-3 text-lg text-gray-700 font-semibold">Envíos</p>
             <label class="bg-white rounded-lg shadow px-6 py-4 flex items-center mb-4">
-                <input x-model="envio_type"  type="radio" name="envio_type" value="1"  class="text-gray-600">
+                <input dusk="tienda" x-model="envio_type"  type="radio" name="envio_type" value="1"  class="text-gray-600">
                 <span class="ml-2 text-gray-700">Recojo en tienda (Calle Falsa 123)</span>
                 <span class="font-semibold text-gray-700 ml-auto">Gratis</span>
             </label>
             <div class="bg-white rounded-lg shadow">
                 <label class="px-6 py-4 flex items-center">
-                    <input x-model="envio_type"  type="radio" name="envio_type" value="2"  class="text-gray-600">
+                    <input dusk="domicilio" x-model="envio_type"  type="radio" name="envio_type" value="2"  class="text-gray-600">
                     <span class="ml-2 text-gray-700">Envío a domicilio</span>
                 </label>
-                <div class="px-6 pb-6 grid grid-cols-2 gap-6" :class="{ 'hidden': envio_type != 2 }">
+                <div dusk="formulario_rellenar" class="px-6 pb-6 grid grid-cols-2 gap-6" :class="{ 'hidden': envio_type != 2 }">
                     <div>
                         <x-jet-label value="Departamento" />
                         <select class="form-control w-full" wire:model="department_id">
