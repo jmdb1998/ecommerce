@@ -28,6 +28,8 @@ class AdminZoneTest extends TestCase
     /** @test */
     public function only_admin_users_can_access_admin()
     {
+        $role = Role::create(['name' => 'admin']);
+
         $admin = User::factory()->create()->assignRole('admin');
         $endUser = User::factory()->create();
 
