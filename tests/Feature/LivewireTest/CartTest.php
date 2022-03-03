@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\LivewireTest;
 
+use App\CreateProduct;
 use App\Http\Livewire\AddCartItem;
 use App\Http\Livewire\AddCartItemColor;
 use App\Http\Livewire\AddCartItemSize;
@@ -23,6 +24,7 @@ use Tests\TestCase;
 class CartTest extends TestCase
 {
     use RefreshDatabase;
+    use CreateProduct;
 
     /** @test */
     public function normal_products_are_added_to_the_cart()
@@ -246,33 +248,5 @@ class CartTest extends TestCase
             'id' => $sizeProduct->id,
             'quantity' => 9
         ]);
-    }
-
-
-
-    public function createProduct($color = false, $size = false)
-    {
-        $brand = Brand::factory()->create();
-
-        $category = Category::factory()->create();
-        $category->brands()->attach($brand->id);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-            'color' => $color,
-            'size' => $size,
-        ]);
-
-        $product = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-            'price' => 10.0,
-        ]);
-
-        Image::factory()->create([
-            'imageable_id' => $product->id,
-            'imageable_type' => Product::class
-        ]);
-
-        return $product;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Browser\DuskTest;
 
+use App\CreateProduct;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Image;
@@ -14,6 +15,7 @@ use Tests\DuskTestCase;
 class ProductsTest extends DuskTestCase
 {
     use DatabaseMigrations;
+    use CreateProduct;
 
     /** @test */
     public function it_shows_five_products()
@@ -151,31 +153,5 @@ class ProductsTest extends DuskTestCase
                 ->screenshot('muestra_talla_y_color');
 
         });
-    }
-
-    public function create_product($color = false, $size = false, $status = 2)
-    {
-        $brand = Brand::factory()->create();
-
-        $category = Category::factory()->create();
-        $category->brands()->attach($brand->id);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-            'color' => $color,
-            'size' => $size
-        ]);
-
-        $product = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-            'brand_id' => $brand->id
-        ]);
-
-        Image::factory()->create([
-            'imageable_id' => $product->id,
-            'imageable_type' => Product::class
-        ]);
-
-        return $product;
     }
 }

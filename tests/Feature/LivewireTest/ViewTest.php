@@ -2,31 +2,20 @@
 
 namespace Tests\Feature\LivewireTest;
 
+use App\CreateProduct;
 use App\Http\Livewire\AddCartItem;
-use App\Http\Livewire\AddCartItemColor;
-use App\Http\Livewire\AddCartItemSize;
-use App\Http\Livewire\CreateOrder;
 use App\Http\Livewire\DropdownCart;
 use App\Http\Livewire\Search;
 use App\Http\Livewire\ShoppingCart;
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\Color;
-use App\Models\ColorProduct;
-use App\Models\Image;
-use App\Models\Product;
-use App\Models\Size;
-use App\Models\Subcategory;
-use App\Models\User;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 
 class ViewTest extends TestCase
 {
     use RefreshDatabase;
+    use CreateProduct;
 
     /** @test */
     public function search_a_product()
@@ -90,31 +79,5 @@ class ViewTest extends TestCase
             ->call('addItem', $normalProduct);
 
         $this->assertEquals(Cart::count(), 1);
-    }
-
-    public function createProduct($color = false, $size = false)
-    {
-        $brand = Brand::factory()->create();
-
-        $category = Category::factory()->create();
-        $category->brands()->attach($brand->id);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-            'color' => $color,
-            'size' => $size,
-        ]);
-
-        $product = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-            'price' => 10.0,
-        ]);
-
-        Image::factory()->create([
-            'imageable_id' => $product->id,
-            'imageable_type' => Product::class
-        ]);
-
-        return $product;
     }
 }
