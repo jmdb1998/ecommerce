@@ -62,9 +62,9 @@ trait CreateData
         return $this->result;
     }
 
-    public function createData($color, $size, $user = false ,$count)
+    public function createData($color, $size, $user = false ,$productCount)
     {
-        for ($i=0; $i<$count; $i++){
+        for ($i=0; $i<$productCount; $i++){
             $this->createProduct($color, $size);
         }
 
@@ -76,7 +76,7 @@ trait CreateData
                            Posicion 1: category
                             Posicion 2: subcategory
                           Posicion 3: product
-                           Posicion $: user*/
+                           Posicion 4: user*/
     }
 }
 

@@ -133,9 +133,9 @@ class CartTest extends TestCase
     /** @test */
     public function shopping_cart_saved_in_bd_when_session_close()
     {
-        $data = $this->createData(false, false,1);
-        $user = $this->createUser();
-        $this->actingAs($user);
+        $data = $this->createData(false, false,1, 1);
+
+        $this->actingAs($data[4]);
 
         Livewire::test(AddCartItem::class, ['product' => $data[3]])
             ->call('addItem', $data[3]);
@@ -147,14 +147,39 @@ class CartTest extends TestCase
         $this->post('/logout');
 
         $this->assertDatabaseHas('shoppingcart', [
-            'identifier' => $user->id
+            'identifier' => $data[4]->id
         ]);
+    }
+
+    /** @test */
+    public function shopping_cart_restored_when_login_back_in()
+    {
+        $data = $this->createData(false, false,1, 2);
+
+        $this->actingAs($data[8]);
+
+        Livewire::test(AddCartItem::class, ['product' => $data[3]])
+            ->call('addItem', $data[3])
+            ->call('addItem', $data[7]);
+
+        Livewire::test(ShoppingCart::class)
+            ->assertViewIs('livewire.shopping-cart')
+            ->assertSee($data[3]->name)
+            ->assertSee($data[7]->name);
+
+        $this->post('/logout');
+
+        $this->actingAs($data[8]);
+
+        $this->get('/shopping-cart')
+            ->assertSee($data[3]->name)
+            ->assertSee($data[7]->name);
     }
 
     /** @test */
     public function normal_products_stock_change_when_added_to_the_cart()
     {
-        $data = $this->createData(false, false,1);
+        $data = $this->createData(false, false,1, 1);
 
         Livewire::test(AddCartItem::class, ['product' => $data[3]])
             ->call('addItem', $data[3])
