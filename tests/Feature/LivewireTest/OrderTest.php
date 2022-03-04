@@ -2,30 +2,26 @@
 
 namespace Tests\Feature\LivewireTest;
 
-use App\CreateProduct;
+use App\CreateData;
 use App\Http\Livewire\AddCartItem;
 use App\Http\Livewire\AddCartItemColor;
 use App\Http\Livewire\AddCartItemSize;
 use App\Http\Livewire\CreateOrder;
-use App\Models\Color;
 use App\Models\Order;
-use App\Models\Size;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Dusk\Browser;
 use Livewire\Livewire;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
 {
     use RefreshDatabase;
-    use CreateProduct;
+    use CreateData;
 
     /** @test */
     public function only_an_registered_user_can_make_an_order()
     {
         $normalProduct = $this->createProduct(false, false);
-        $user = User::factory()->create();
+        $user = $this->createUser();
         $this->actingAs($user);
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
@@ -43,6 +39,7 @@ class OrderTest extends TestCase
     public function an_unregistered_user_cant_make_an_order()
     {
         $normalProduct = $this->createProduct(false, false);
+
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
             ->call('addItem', $normalProduct)
             ->assertStatus(200);
@@ -54,21 +51,20 @@ class OrderTest extends TestCase
     /** @test */
     public function order_is_created_and_cart_destroyed()
     {
-        $normalProduct = $this->createProduct(false, false);
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $data = $this->createData(false, false, true, 1);
+        $this->actingAs($data[4]);
 
-        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
-            ->call('addItem', $normalProduct)
+        Livewire::test(AddCartItem::class, ['product' => $data[3]])
+            ->call('addItem', $data[3])
             ->assertStatus(200);
 
         Livewire::test(CreateOrder::class,['contact' => 'Test', 'phone' => 633444816])
             ->call('create_order')
             ->assertStatus(200)
-            ->assertRedirect('/orders/2/payment');
+            ->assertRedirect('/orders/1/payment');
 
         $this->assertDatabaseMissing('shoppingcart', [
-            'identifier' => $user->id
+            'identifier' => $data[4]->id
         ]);
 
     }
@@ -76,12 +72,11 @@ class OrderTest extends TestCase
     /** @test */
     public function when_order_is_created_normal_product_stock_changes_in_DB()
     {
-        $normalProduct = $this->createProduct(false, false);
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $data = $this->createData(false, false, true, 1);
+        $this->actingAs($data[4]);
 
-        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
-            ->call('addItem', $normalProduct)
+        Livewire::test(AddCartItem::class, ['product' => $data[3]])
+            ->call('addItem', $data[3])
             ->assertStatus(200);
 
         Livewire::test(CreateOrder::class,['contact' => 'Test', 'phone' => 633444816])
@@ -89,7 +84,7 @@ class OrderTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseHas('products', [
-            'id' => $normalProduct->id,
+            'id' => $data[3]->id,
             'quantity' => 14
         ]);
 
@@ -98,13 +93,12 @@ class OrderTest extends TestCase
     /** @test */
     public function when_order_is_created_color_product_stock_changes_in_DB()
     {
-        $user = User::factory()->create();
-
         $colorProduct = $this->createProduct(true, false);
         $color = $this->createColor();
 
         $colorProduct->colors()->attach($color->id, ['quantity' => 10]);
 
+        $user = $this->createUser();
         $this->actingAs($user);
 
         Livewire::test(AddCartItemColor::class, ['product' => $colorProduct])
@@ -133,7 +127,7 @@ class OrderTest extends TestCase
 
         $size->colors()->attach($color->id, ['quantity' => 10]);
 
-        $user = User::factory()->create();
+        $user = $this->createUser();
         $this->actingAs($user);
 
         Livewire::test(AddCartItemSize::class, ['product' => $sizeProduct])
@@ -154,7 +148,7 @@ class OrderTest extends TestCase
     public function check_the_expiration_of_pending_orders()
     {
         $normalProduct = $this->createProduct();
-        $user = User::factory()->create();
+        $user = $this->createUser();
         $this->actingAs($user);
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
@@ -179,8 +173,8 @@ class OrderTest extends TestCase
     public function cant_access_other_user_order()
     {
         $normalProduct = $this->createProduct();
-        $user1 = User::factory()->create();
-        $user2 = User::factory()->create();
+        $user1 = $this->createUser();
+        $user2 = $this->createUser();
         $this->actingAs($user1);
 
         Livewire::test(AddCartItem::class, ['product' => $normalProduct])
@@ -192,17 +186,5 @@ class OrderTest extends TestCase
 
         $this->actingAs($user2)
             ->get('/orders/7/')->assertStatus(403);
-    }
-
-    public function createColor()
-    {
-        $color = Color::create(['name' => 'prueba']);
-        return $color;
-    }
-
-    public function createSize($product)
-    {
-        $size = Size::factory(['name' => 'prueba', 'product_id' => $product->id])->create();
-        return $size;
     }
 }
