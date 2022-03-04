@@ -7,19 +7,12 @@ use App\Http\Livewire\AddCartItem;
 use App\Http\Livewire\AddCartItemColor;
 use App\Http\Livewire\AddCartItemSize;
 use App\Http\Livewire\CreateOrder;
-use App\Models\Brand;
-use App\Models\Category;
 use App\Models\Color;
-use App\Models\ColorProduct;
-use App\Models\Image;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\Size;
-use App\Models\Subcategory;
 use App\Models\User;
-use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Dusk\Browser;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -178,6 +171,27 @@ class OrderTest extends TestCase
         $this->artisan('schedule:run');
         $order = Order::first();
         $this->assertEquals($order->status, 5);
+    }
+
+
+
+    /** @test */
+    public function cant_access_other_user_order()
+    {
+        $normalProduct = $this->createProduct();
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        $this->actingAs($user1);
+
+        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+            ->call('addItem', $normalProduct);
+
+        Livewire::test(CreateOrder::class, ['contact' => 'Test', 'phone' => 633444816])
+            ->call('create_order')
+            ->assertStatus(200);
+
+        $this->actingAs($user2)
+            ->get('/orders/7/')->assertStatus(403);
     }
 
     public function createColor()

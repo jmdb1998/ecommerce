@@ -2,9 +2,9 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,8 +13,8 @@ class ShowProducts2 extends Component
 
 use WithPagination;
 
-    public $search, $categorySearch, $priceSearch,$subcategorySearch, $brandSearch, $status, $colorsFilter, $sizeFilter;
-    public $category, $subcategory;
+    public $search, $categorySearch, $priceSearch,$subcategorySearch, $brandSearch, $colorsFilter, $sizeFilter, $quantity, $reset;
+    public $status = 2;
     public $pagination = 15;
     public $columns = ['Nombre','Categoría','Estado','Precio','Subcategoria','Marca','Stock','Colores','Tallas','Fecha Creación','Fecha Edición'];
     public $selectedColumns = [];
@@ -55,49 +55,37 @@ use WithPagination;
         $this->resetPage();
     }
 
+    public function resetFilter()
+    {
+        $this->reset(['search', 'categorySearch', 'priceSearch', 'subcategorySearch', 'brandSearch', 'colorsFilter', 'sizeFilter', 'quantity', 'reset']);
+        $this->resetPage();
+    }
+
     public function render()
     {
-        $products = Product::query()->where('name', 'LIKE', "%{$this->search}%");
+        $products = Product::query()->search($this->search)
+            ->categoryFilter($this->categorySearch)
+            ->subcategoryFilter($this->subcategorySearch)
+            ->brandFilter($this->brandSearch)
+            ->statusFilter($this->status);
 
-        if ($this->categorySearch) {
-            $products = $products->whereHas('subcategory', function (Builder $query) {
-                $query->whereHas('category', function (Builder $query) {
-                    $query->where('name', 'LIKE', "%{$this->categorySearch}%");
-                });
-            });
+
+        if ($this->colorsFilter) {
+            $products = Product::colorsFilter($this->colorsFilter);
         }
 
-        if ($this->subcategorySearch) {
-            $products = $products->whereHas('subcategory', function (Builder $query) {
-                $query->where('name', 'LIKE', "%{$this->subcategorySearch}%");
-            });
-        }
-
-        if ($this->brandSearch) {
-            $products = $products->whereHas('brand', function (Builder $query) {
-                $query->where('name', 'LIKE', "%{$this->brandSearch}%");
-            });
-        }
-
-        if ($this->status) {
-            $products = $products->where('status', $this->status);
+        if ($this->sizeFilter) {
+            $products = Product::sizeFilter($this->sizeFilter);
         }
 
         if ($this->priceSearch) {
             $products = $products->where('price', 'LIKE', "%{$this->priceSearch}%");
         }
 
-        if ($this->colorsFilter) {
-            $products = $products->whereHas('colors');
-        }
-
-        if ($this->sizeFilter) {
-            $products = $products->whereHas('sizes');
-        }
-
         $products = $products->orderBy($this->sortField,$this->sortDirection)->paginate($this->pagination);
+        $categories = Category::get();
 
-        return view('livewire.admin.show-products2', compact('products'))
+        return view('livewire.admin.show-products2', compact('products', 'categories'))
             ->layout('layouts.admin');
     }
 }

@@ -138,6 +138,24 @@ class ProductsTest extends DuskTestCase
     }
 
     /** @test */
+    public function test_the_colorcan_be_seen()
+    {
+
+        $product = $this->create_product(true, false);
+
+        $this->browse(function (Browser $browser) use ($product) {
+            $browser->visit('/products/' . $product->slug)
+                ->pause(500)
+                ->assertSee($product->name)
+                ->pause(500)
+                ->assertSee('@talla')
+                ->assertDontSee('@color')
+                ->screenshot('muestra_color');
+
+        });
+    }
+
+    /** @test */
     public function test_the_color_and_size_can_be_seen()
     {
 

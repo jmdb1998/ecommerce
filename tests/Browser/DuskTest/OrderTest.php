@@ -4,13 +4,14 @@ namespace Tests\Browser\DuskTest;
 
 use App\CreateProduct;
 use App\Http\Livewire\AddCartItem;
+use App\Http\Livewire\CreateOrder;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Livewire\Livewire;
 use Tests\DuskTestCase;
 
-class CreateOrderTest extends DuskTestCase
+class OrderTest extends DuskTestCase
 {
     use DatabaseMigrations;
     use CreateProduct;

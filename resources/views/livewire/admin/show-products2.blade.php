@@ -12,7 +12,7 @@
     <x-table-responsive>
 
         <div class="px-6 py-4">
-            <x-jet-input class="w-1/3"
+            <x-jet-input class="w-1/4"
                          wire:model="search"
                          type="text"
                          placeholder="Introduzca el nombre del producto a buscar" />
@@ -44,41 +44,52 @@
                 </div>
             </div>
 
-            <aside>
-                <x-jet-input class="w-1/3"
-                             wire:model="category"
+            <div x-data="{dropdownMenu: false}" class="inline-block">
+                <x-button-link color="green" @click="dropdownMenu = ! dropdownMenu" class="ml-2 flex items-center p-2 bg-white bg-gray-100 rounded-md">
+                    <i class="fa-solid fa-filter"></i>
+                    <span class="ml-4">Mostrar Filtros </span>
+                </x-button-link>
+            <div x-show="dropdownMenu" class="absolute left-1 py-2 mt-2 bg-white bg-gray-100 rounded-md shadow-xl">
+                <aside>
+                <x-jet-input class="w1/3"
+                             wire:model="categorySearch"
                              type="text"
-                             placeholder="Introduzca el nombre de la categoria a buscar" />
+                             placeholder="Categoria a buscar" />
 
-                <x-jet-input class="w-1/3"
-                             wire:model="subcategory"
+                <x-jet-input class="w1/3"
+                             wire:model="subcategorySearch"
                              type="text"
-                             placeholder="Introduzca el nombre de la subcategoria a buscar" />
+                             placeholder="Subcategoria a buscar" />
 
-                <x-jet-input class="w-1/3"
-                             wire:model="brand"
+                <x-jet-input class="w1/3"
+                             wire:model="brandSearch"
                              type="text"
-                             placeholder="Introduzca el statos del producto" />
+                             placeholder="Marca" />
 
-                <x-jet-input class="w-1/3"
-                             wire:model="price"
+                <select wire:model="status" class="form-control w1/3">
+                    <option value="" selected disabled>Seleccionar el estado</option>
+                        <option value="2">Publicado</option>
+                        <option value="1">No Publicado</option>
+                </select>
+
+                <x-jet-input class="w1/3"
+                             wire:model="priceSearch"
                              type="text"
-                             placeholder="Introduzca el precio del producto" />
+                             placeholder="Precio" />
 
-                <x-jet-input class="w-1/3"
-                             wire:model="colors"
-                             type="text"
-                             placeholder="Introduzca el precio del producto" />
+                <input type="checkbox" wire:model="colorsFilter">
+                <label>Color</label>
 
-                <x-jet-input class="w-1/3"
-                             wire:model="sizes"
-                             type="text"
-                             placeholder="Introduzca el precio del producto" />
+                <input type="checkbox" wire:model="sizeFilter">
+                <label>Talla</label>
 
-                <x-jet-button class="mt-4" wire:click="limpiar">
+
+                <x-jet-button class="mt-4" wire:click="resetFilter">
                     Eliminar Filtros
                 </x-jet-button>
-            </aside>
+                </aside>
+            </div>
+            </div>
         </div>
 
         @if($products->count())
@@ -92,7 +103,7 @@
                     @endif
                     @if($this->showColumn('Categoría'))
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Categoría
+                            <button>Categoría</button>
                         </th>
                     @endif
                     @if($this->showColumn('Estado'))
