@@ -15,7 +15,7 @@ trait CreateData
 {
     public $result = [];
 
-    public function createProduct($color = false, $size = false, $status = 2)
+    public function createProduct($color = false, $size = false, $status = 2, $i)
     {
         $brand = Brand::factory()->create();
 
@@ -39,44 +39,52 @@ trait CreateData
             'imageable_type' => Product::class
         ]);
 
-        array_push($this->result, $brand, $category, $subcategory, $product);
-        return $this->result;
+
+        return $this->result = ["brand".$i => $brand,
+                                "category".$i => $category,
+                                "subcategory".$i => $subcategory,
+                                "product".$i => $product];
     }
 
-    public function createColor()
+    public function createColor($i)
     {
         $color = Color::create(['name' => 'prueba']);
-        return $color;
+        return $this->result = ["color".$i => $color];
     }
 
-    public function createSize($product)
+    public function createSize($product, $i)
     {
         $size = Size::factory(['name' => 'prueba', 'product_id' => $product->id])->create();
-        return $size;
+        return $this->result = ["size".$i => $size];
     }
 
-    public function createUser()
+    public function createUser($i)
     {
        $user = User::factory()->create();
-        array_push($this->result, $user);
-        return $this->result;
+        return $this->result = ["user".$i => $user];
     }
 
-    public function createData($color, $size, $user = false ,$productCount)
+    public function createData($color, $size, $productCount = null, $userCount = null, $colorCount = null, $sizeCount = null)
     {
-        for ($i=0; $i<$productCount; $i++){
-            $this->createProduct($color, $size);
+        if (isset($productCount)){
+            for ($i=0; $i<$productCount; $i++){
+                $this->createProduct($color, $size,2,$i);
+            }
         }
 
-        if ($user = true){
-            $this->createUser();
+        if (isset($userCount)){
+            for ($i=0; $i<$userCount; $i++){
+                $this->createUser($i);
+            }
         }
 
-        return $this->result; /*Posicion 0: brand
-                           Posicion 1: category
-                            Posicion 2: subcategory
-                          Posicion 3: product
-                           Posicion 4: user*/
+        if (isset($colorCount)){
+            for ($i=0; $i<$colorCount; $i++){
+                $this->createColor($i);
+            }
+        }
+
+        return $this->result;
     }
 }
 
