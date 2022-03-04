@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filter\QueryFilter;
 use App\ProductQuery;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -62,8 +63,13 @@ class Product extends Model
         }
     }
 
-    public function newEloquentBuilder($query)
+    public function scopeFilterBy($query, QueryFilter $filters, array $data)
+    {
+        return $filters->applyto($query, $data);
+    }
+
+    /*public function newEloquentBuilder($query)
     {
         return new ProductQuery($query);
-    }
+    }*/
 }
