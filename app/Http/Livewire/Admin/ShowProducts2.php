@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Filter\ProductFilter;
 
 class ShowProducts2 extends Component
 {
@@ -63,11 +64,7 @@ use WithPagination;
 
     public function render()
     {
-        $products = Product::query()->search($this->search)
-            ->categoryFilter($this->categorySearch)
-            ->subcategoryFilter($this->subcategorySearch)
-            ->brandFilter($this->brandSearch)
-            ->statusFilter($this->status);
+        $products = Product::query()->filterBy(request()->only(['search', 'category', 'subcategory', 'brand', 'status', 'colors', 'sizes']));
 
 
         if ($this->colorsFilter) {

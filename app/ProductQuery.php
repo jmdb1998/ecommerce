@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ProductQuery extends Builder
 {
-    public function search($search)
+    /*public function search($search)
     {
         return $this->where('name', 'LIKE', "%{$search}%");
     }
@@ -55,6 +55,6 @@ class ProductQuery extends Builder
     public function sizeFilter()
     {
         return $this->whereHas('sizes');
-    }
+    }*/
 
 }
