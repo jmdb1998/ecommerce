@@ -8,6 +8,7 @@ class ProductFilter extends QueryFilter
 {
     public function rules():array
     {
+
         return [
             'search' => 'filled',
             'category' => 'filled',
