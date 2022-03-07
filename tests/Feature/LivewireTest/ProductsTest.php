@@ -2,23 +2,10 @@
 
 namespace Tests\Feature\LivewireTest;
 
-use App\CreateProduct;
+use tests\CreateData;
 use App\Http\Livewire\AddCartItem;
 use App\Http\Livewire\AddCartItemColor;
 use App\Http\Livewire\AddCartItemSize;
-use App\Http\Livewire\DropdownCart;
-use App\Http\Livewire\Search;
-use App\Http\Livewire\ShoppingCart;
-use App\Http\Livewire\UpdateCartItem;
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\Color;
-use App\Models\Image;
-use App\Models\Product;
-use App\Models\Subcategory;
-use App\Models\User;
-use Gloudemans\Shoppingcart\Facades\Cart;
-use Illuminate\Auth\Events\Logout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -26,14 +13,14 @@ use Tests\TestCase;
 class ProductsTest extends TestCase
 {
     use RefreshDatabase;
-    use CreateProduct;
+    use CreateData;
 
     /** @test */
     public function normal_products_stock_is_seen()
     {
-        $normalProduct = $this->createProduct(false, false);
+        $data = $this->createData(false, false);
 
-        Livewire::test(AddCartItem::class, ['product' => $normalProduct])
+        Livewire::test(AddCartItem::class, ['product' => $data["product0"]])
             ->assertViewIs('livewire.add-cart-item')
             ->assertSee('quantity');
 
@@ -42,9 +29,9 @@ class ProductsTest extends TestCase
     /** @test */
     public function color_products_stock_is_seen()
     {
-        $colorProduct = $this->createProduct(true, false);
+        $data = $this->createData(true, false);
 
-        Livewire::test(AddCartItemColor::class, ['product' => $colorProduct])
+        Livewire::test(AddCartItemColor::class, ['product' => $data["product0"]])
             ->assertViewIs('livewire.add-cart-item-color')
             ->assertSee('quantity');
     }
@@ -52,9 +39,9 @@ class ProductsTest extends TestCase
     /** @test */
     public function size_products_stock_is_seen()
     {
-        $sizeProduct = $this->createProduct(true, true);
+        $data = $this->createData(true, true);
 
-        Livewire::test(AddCartItemSize::class, ['product' => $sizeProduct])
+        Livewire::test(AddCartItemSize::class, ['product' => $data["product0"]])
             ->assertViewIs('livewire.add-cart-item-size')
             ->assertSee('quantity');
     }

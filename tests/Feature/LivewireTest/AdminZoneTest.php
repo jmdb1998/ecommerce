@@ -2,24 +2,18 @@
 
 namespace Tests\Feature\LivewireTest;
 
-use App\CreateProduct;
 use App\Http\Livewire\Admin\ShowProducts;
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\Image;
-use App\Models\Product;
-use App\Models\Subcategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
+use Tests\CreateData;
 use Tests\TestCase;
 
 class AdminZoneTest extends TestCase
 {
     use RefreshDatabase;
-    use CreateProduct;
+    use CreateData;
 
     /** @test */
     public function not_logged_user_cant_access_admin_routes()
@@ -42,11 +36,10 @@ class AdminZoneTest extends TestCase
     /** @test */
     public function search_bar_works_in_admin_view()
     {
-        $product1 = $this->createProduct(false, false);
-        $product2 = $this->createProduct(false, false);
+        $data = $this->createData(false, false,2,2);
 
-        Livewire::test(ShowProducts::class, ['search' => $product1->name])
-            ->assertSee($product1->name)
-            ->assertDontSee($product2->name);
+        Livewire::test(ShowProducts::class, ['search' => $data["product0"]->name])
+            ->assertSee($data["product0"]->name)
+            ->assertDontSee($data["product1"]->name);
     }
 }

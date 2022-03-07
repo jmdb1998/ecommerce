@@ -2,6 +2,7 @@
 
 namespace Tests\Browser\DuskTest;
 
+use App\CreateData;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Image;
@@ -14,56 +15,33 @@ use Tests\DuskTestCase;
 class CategoriesTest extends DuskTestCase
 {
     use DatabaseMigrations;
+    use CreateData;
 
     /** @test */
     public function can_access_categories()
     {
-        $brand = Brand::factory()->create();
+        $data = $this->createData(false, false, 2);
 
-        $category = Category::factory()->create();
-        $category->brands()->attach($brand->id);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-        ]);
-
-        $subcategory2 = Subcategory::factory()->create([
-            'category_id' => $category->id,
-        ]);
-
-        $product = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-        ]);
-
-        $product2 = Product::factory()->create([
-            'subcategory_id' => $subcategory2->id,
-        ]);
-
-        Image::factory()->create([
-            'imageable_id' => $product->id,
-            'imageable_type' => Product::class
-        ]);
-
-        $this->browse(function (Browser $browser) use ($category, $subcategory, $product, $brand, $product2) {
+        $this->browse(function (Browser $browser) use ($data) {
             $browser->visit('/')
                 ->pause(500)
                 ->clickLink('Categorías')
-                ->assertSee($category->name)
+                ->assertSee($data["category0"]->name)
                 ->mouseover('@categories')
                 ->pause(500)
-                ->assertSee($subcategory->name)
+                ->assertSee($data["subcategory0"]->name)
                 ->pause(500)
-                ->clickLink($subcategory->name)
+                ->clickLink($data["subcategory0"]->name)
                 ->pause(500)
-                ->assertSee($category->name)
+                ->assertSee($data["category0"]->name)
                 ->pause(500)
-                ->assertSee($subcategory->name)
+                ->assertSee($data["subcategory0"]->name)
                 ->pause(500)
-                ->assertSee(ucfirst($brand->name))
+                ->assertSee(ucfirst($data["brand0"]->name))
                 ->pause(500)
-                ->assertSee($product->name)
+                ->assertSee($data["product"]->name)
                 ->pause(500)
-                ->assertDontSee($product2->name)
+                ->assertDontSee($data["product1"]->name)
                 ->screenshot('se_ve_la_categoria');
 
         });

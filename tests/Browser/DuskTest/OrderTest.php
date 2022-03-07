@@ -2,19 +2,18 @@
 
 namespace Tests\Browser\DuskTest;
 
-use App\CreateProduct;
 use App\Http\Livewire\AddCartItem;
-use App\Http\Livewire\CreateOrder;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Livewire\Livewire;
+use Tests\CreateData;
 use Tests\DuskTestCase;
 
 class OrderTest extends DuskTestCase
 {
     use DatabaseMigrations;
-    use CreateProduct;
+    use CreateData;
 
     public function it_show_shipping_when_selected()
     {

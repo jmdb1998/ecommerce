@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Filter\ProductFilter;
 
 class ShowProducts2 extends Component
 {
@@ -61,31 +62,27 @@ use WithPagination;
         $this->resetPage();
     }
 
-    public function render()
+    protected function getProduct(ProductFilter $productFilter){
+        $products = Product::query()
+            ->filterBy($productFilter, [
+                'search' => $this->search,
+                'category' => $this->categorySearch,
+                'price' => $this->priceSearch,
+                'subcategory' => $this->subcategorySearch,
+                'brand' => $this->brandSearch,
+                'colors' => $this->colorsFilter,
+                'sizes' => $this->sizeFilter
+            ])->orderBy($this->sortField,$this->sortDirection)->paginate($this->pagination);
+
+        return $products;
+
+    }
+
+    public function render(ProductFilter $productFilter)
     {
-        $products = Product::query()->search($this->search)
-            ->categoryFilter($this->categorySearch)
-            ->subcategoryFilter($this->subcategorySearch)
-            ->brandFilter($this->brandSearch)
-            ->statusFilter($this->status);
 
-
-        if ($this->colorsFilter) {
-            $products = Product::colorsFilter($this->colorsFilter);
-        }
-
-        if ($this->sizeFilter) {
-            $products = Product::sizeFilter($this->sizeFilter);
-        }
-
-        if ($this->priceSearch) {
-            $products = $products->where('price', 'LIKE', "%{$this->priceSearch}%");
-        }
-
-        $products = $products->orderBy($this->sortField,$this->sortDirection)->paginate($this->pagination);
-        $categories = Category::get();
-
-        return view('livewire.admin.show-products2', compact('products', 'categories'))
-            ->layout('layouts.admin');
+        return view('livewire.admin.show-products2', [
+            'products' => $this->getProduct($productFilter)
+        ])->layout('layouts.admin');
     }
 }
