@@ -67,4 +67,9 @@ class Product extends Model
     {
         return $filters->applyto($query, $data);
     }
+
+    /*public function newEloquentBuilder($query)
+    {
+        return new ProductQuery($query);
+    }*/
 }
